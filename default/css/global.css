@@ -1,0 +1,32 @@
+/* SOME GLOBALS */
+html, body{
+	margin: 0px;
+	padding: 0px;
+    font-size: 100%;
+	background:	#fff;
+	font-family: 'Open Sans', Tahoma, Verdana, Arial, sans-serif;
+}
+body a{
+	transition: 0.5s all ease;
+	-webkit-transition: 0.5s all ease;
+	-moz-transition: 0.5s all ease;
+	-o-transition: 0.5s all ease;
+	-ms-transition: 0.5s all ease;
+}
+body a:hover{text-decoration:none;}
+img {text-decoration: none; border: none; margin: 0px;}
+h1,h2,h3,h4,h5,h6{margin:0;}
+p{margin:0;}
+ul,label{margin:0;padding:0;}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.device-text p{padding-top: 20px;}
+
+.overview{padding-top: 50px;}
+.overview h1{text-transform:uppercase;}
+.overview,.service-block{text-align:center;}
+.overview .lead{margin:40px 10%;margin-bottom:80px;}

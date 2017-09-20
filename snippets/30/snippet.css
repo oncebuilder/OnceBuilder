@@ -1,0 +1,13 @@
+.tcenter{
+padding: 10px;
+text-align:center;
+}
+
+/* for validator */
+a:link {
+text-decoration:none;
+}
+
+.green, .green a {
+color: #339900;
+}

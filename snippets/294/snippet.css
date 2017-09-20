@@ -1,0 +1,21 @@
+#features-box {padding-bottom: 50px;}
+#features-box .service-block{text-align:center;}
+
+#features-box .service-block{margin-bottom: 50px;}
+#features-box .service-block .glyphicon{font-size:60px;margin-bottom:20px;}
+#features-box .service-block p{font-size: 15px; margin-top: 15px;}
+
+
+#features-box .features-more {display: none;}
+#features-box .features-more-show {display: block;}
+
+#features-more{background: #3C8DBC; padding: 30px 0; text-align: center;}
+#features-more button{border-radius: 2px;}
+
+#features-more b{font-size: 20px; font-weight: normal;}
+
+#features-more span:last-child{
+  -ms-transform: rotate(180deg); /* IE 9 */
+  -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+  transform: rotate(180deg);
+}

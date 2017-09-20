@@ -1,0 +1,30 @@
+
+.jumbotron .btn {
+    color:#FFFFFF; 
+    padding: 5px !important;
+    font-size: 12px !important; 
+    margin-left:20px;
+}
+.jumbotron label {
+    font-size:12px;    
+}
+
+.img-user{
+    height:120px;
+    width:120px;
+}
+
+.prj-name{
+    font-weight:bold;
+    color:#5bc0de;
+}
+
+.user-item img, .user-item h3 {
+    display:inline-block;    
+}
+ 
+.jumbotron .btn .user-item h3 a{
+    color:#5bc0de; 
+    padding: 5px !important;
+    font-size: 12px !important; 
+}

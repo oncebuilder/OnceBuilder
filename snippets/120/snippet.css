@@ -1,0 +1,61 @@
+body {
+    margin-bottom: 120px;   
+}
+
+.btn.dropdown-toggle ~ .dropdown-menu, 
+ul.nav li.dropdown ul.dropdown-menu {
+    background-color: rgb(244, 244, 244);
+	background-color: rgb(255, 255, 255);
+	border: 0 solid rgb(66, 133, 244);
+	box-shadow: 0px 0px 3px rgba(25, 25, 25, 0.3);
+	top: 0px;
+	margin: 0px;
+    padding: 0px;
+}
+ul.nav li.dropdown ul.dropdown-menu {
+    position: absolute;
+    width: 100%;
+}
+.dropdown-menu .dropdown-plus-title {
+	width: 100%;
+	color: rgb(51, 51, 51);
+	padding: 6px 12px;
+	font-weight: 800;
+	border: 0 solid rgb(173, 173, 173);
+	border-bottom-width: 2px;
+	cursor: pointer;
+}
+
+ul.nav li.dropdown ul.dropdown-menu .dropdown-plus-title {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 20px;
+}
+
+.btn.dropdown-toggle.btn-primary ~ .dropdown-menu .dropdown-plus-title {
+    border-color: rgb(53, 126, 189);
+}
+.btn.dropdown-toggle.btn-success ~ .dropdown-menu .dropdown-plus-title {
+    border-color: rgb(76, 174, 76);
+}
+.btn.dropdown-toggle.btn-info ~ .dropdown-menu .dropdown-plus-title {
+    border-color: rgb(70, 184, 218);
+}
+.btn.dropdown-toggle.btn-warning ~ .dropdown-menu .dropdown-plus-title {
+    border-color: rgb(238, 162, 54);
+}
+.btn.dropdown-toggle.btn-danger ~ .dropdown-menu .dropdown-plus-title {
+    border-color: rgb(212, 63, 58);
+}
+
+@media (min-width: 768px) {
+    ul.nav li.dropdown ul.dropdown-menu .dropdown-plus-title {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+}
+@media (min-width: 768px) {
+    ul.nav li.dropdown ul.dropdown-menu {
+        width: auto;
+    }
+}

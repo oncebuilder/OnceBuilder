@@ -1,0 +1,240 @@
+
+<div class="container">
+  
+  <h1 class="text-center text-success">10 Useful Bootstrap Tricks
+    <p class="lead">Bootstrap 3.1 and jQuery Snippets</p>
+  </h1>
+  <hr>
+  <ul class="timeline">
+    
+      <!--shake effect-->    
+      <li>
+        <div class="timeline-badge info"><i class="glyphicon glyphicon-hand-left"></i></div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Shake Button</h2>
+              <p><small class="text-muted">Click to make it say no</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <button class="btn btn-primary btn-lg" id="shaker">Click Me</button>
+            </div>
+        </div>
+      </li>
+    
+      <!--progress bar-->	
+      <li class="timeline-inverted">
+          <div class="timeline-badge"><i class="glyphicon glyphicon-time"></i></div>
+      	  <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Progress Bar</h2>
+              <p><small class="text-muted">A working jQuery example</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <div class="progress progress-striped">
+                 <div class="progress-bar bar" style="width:0%;"></div>
+              </div>
+            </div>
+          </div>
+      </li>
+    
+      <!--switch button-->
+      <li>
+        <div class="timeline-badge success"><i class="glyphicon glyphicon-hand-up"></i></div> 
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Switch Button</h2>
+              <p><small class="text-muted">Toggle off and on state</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <div class="btn-group btn-toggle"> 
+                <button class="btn btn-lg btn-default">ON</button>
+                <button class="btn btn-lg btn-primary active">OFF</button>
+              </div>
+            </div>
+         </div>
+      </li>
+    
+      <!--pagination-->
+      <li class="timeline-inverted">
+        <div class="timeline-badge info"><i class="glyphicon glyphicon-fast-forward"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Pagination</h2>
+              <p><small class="text-muted">Paging for sections or paragraphs</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <div id="pages">
+                  <div class="page">
+                     Page 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. 
+                     Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis 
+                     dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. 
+                     Aliquam in felis sit amet augue.
+                  </div>
+                  <div class="page">
+                     Page 2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. 
+                     Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis 
+                     dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. 
+                     Aliquam in felis sit amet augue.
+                  </div>
+                  <div class="page">
+                     Page 3 - More m ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. 
+                     Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis 
+                     dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. 
+                     Aliquam in felis sit amet augue.
+                  </div>
+                  <div class="page">
+                     Page 4 - Final ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. 
+                     Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis 
+                     dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. 
+                     Aliquam in felis sit amet augue.
+                  </div>
+              </div>
+              <ul class="pagination" id="myPager"></ul>
+            </div>
+          </div>
+      </li>
+    
+      <!--dropdown button as select-->
+      <li>
+        <div class="timeline-badge info"><i class="glyphicon glyphicon-tasks"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Select Button</h2>
+              <p><small class="text-muted">Turn a Dropdown into a select list</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <div class="btn-group">
+                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">Select an Item <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Item I</a></li>
+                  <li><a href="#">Item II</a></li>
+                  <li><a href="#">Item III</a></li>
+                  <li><a href="#">Item IV</a></li>
+                  <li><a href="#">Item V</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">Other</a></li>
+                </ul>
+              </div>
+            </div>
+         </div>
+  	  </li>
+    
+      <!--expanding input field -->	
+      <li class="timeline-inverted">
+        <div class="timeline-badge primary"><i class="glyphicon glyphicon-arrow-right"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Expanding Input (CSS only)</h2>
+              <p><small class="text-muted">Grows wider when clicked</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <input class="form-control input-md" id="myInput" placeholder="Click here" type="text">
+           </div>
+         </div>
+  	  </li>
+    
+      <!--email validation -->		
+      <li>
+        <div class="timeline-badge info"><i class="glyphicon glyphicon-envelope"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Pop-up Email Validation</h2>
+              <p><small class="text-muted">Live as-you-type validator</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <form id="emailForm">
+                  <div class="form-group"><input class="form-control email" data-placement="top" data-trigger="manual" data-content="Must be a valid e-mail address (user@gmail.com)" placeholder="Enter your email" type="text"></div>
+              </form>
+            </div>
+         </div>
+  	  </li>
+    
+    
+      <!--caps lock test -->		
+      <li>
+        <div class="timeline-badge green"><i class="glyphicon glyphicon-font"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Caps Lock Check</h2>
+              <p><small class="text-muted">As-you-type for case sensitive passwords</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <form>
+                  <div class="form-group"><input class="form-control" data-placement="top" data-trigger="manual" data-title="Caps lock is on!" placeholder="Password" type="password"></div>
+              </form>
+  	  		</div>
+         </div>
+  	  </li>
+    
+      <!--collapse tabs into dropdown -->		
+      <li class="timeline-inverted">
+        <div class="timeline-badge danger"><i class="glyphicon glyphicon-folder-close"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Collapse Tabs</h2>
+              <p><small class="text-muted">Overflow extra tabs into a Dropdown</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+                <ul class="nav nav-tabs" id="tabs">
+                  <li><a href="#tab0" data-toggle="tab">Tab0</a></li>
+                  <li><a href="#tab1" data-toggle="tab">Tab1</a></li>
+                  <li><a href="#tab2" data-toggle="tab">Tab2</a></li>
+                  <li><a href="#tab3" data-toggle="tab">Tab3</a></li>
+                  <li><a href="#tab4" data-toggle="tab">Tab4</a></li>
+                  <li><a href="#tab5" data-toggle="tab">Tab5</a></li>	  
+                  <li><a href="#tab6" data-toggle="tab">Tab6</a></li>
+                  <li><a href="#tab7" data-toggle="tab">Tab7</a></li>
+                  <li><a href="#tab8" data-toggle="tab">Tab8</a></li>
+                  <li id="lastTab">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                      More <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="collapsed">
+                    </ul>
+                  </li>
+              </ul>
+              <div class="tab-content">
+                  <div class="tab-pane" id="tab0">Tab 0 content...</div>
+                  <div class="tab-pane" id="tab1">Tab 1 content...</div>
+                  <div class="tab-pane" id="tab2">Tab 2 content...</div>
+                  <div class="tab-pane" id="tab3">Tab 3 content...</div>
+                  <div class="tab-pane" id="tab4">Tab 4 content...</div>
+                  <div class="tab-pane" id="tab5">Tab 5 content...</div>
+                  <div class="tab-pane" id="tab6">Tab 6 content...</div>
+                  <div class="tab-pane" id="tab7">Tab 7 content...</div>
+                  <div class="tab-pane" id="tab8">Tab 8 content...</div>
+              </div>
+            </div>
+         </div>
+  	  </li>
+    
+      <!--loading button -->		
+      <li>
+        <div class="timeline-badge warning"><i class="glyphicon glyphicon-time"></i></div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h2 class="timeline-title">Loading Button</h2>
+              <p><small class="text-muted">Add state to your buttons</small></p>
+            </div>
+            <div class="timeline-body">
+              <h3></h3>
+              <button type="button" id="loadingBtn" data-loading-text="Loading..." class="btn btn-lg btn-primary">
+                  Click Me
+              </button>
+            </div>
+         </div>
+  	  </li>
+    
+  </ul>
+  
+  <hr>
+</div>

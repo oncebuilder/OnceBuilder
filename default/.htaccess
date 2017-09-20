@@ -1,0 +1,15 @@
+RewriteEngine on
+DirectoryIndex index.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([a-zA-Z]+)/$ /index.php?route=$1 [L,QSA]
+RewriteRule ^([a-zA-Z]+)$ /index.php?route=$1 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/([a-zA-Z-]+)$ /index.php?route=$1&option=$2 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/([a-zA-Z-]+)/page/([0-9]+)$ /index.php?route=$1&option=$2&page=$3 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/([0-9]+)$ /index.php?route=$1&id=$2 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/([0-9]+)/$ /index.php?route=$1&id=$2 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/([0-9]+)/([0-9a-zA-Z-]+)$ /index.php?route=$1&id=$2&option=$3 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/([0-9]+)/([0-9a-zA-Z-]+)/page/([0-9]+)$ /index.php?route=$1&id=$2&option=$3&page=$4 [L,QSA]
+RewriteRule ^([a-zA-Z]+)/page/([0-9]+)$ /index.php?route=$1&page=$2 [L,QSA]

@@ -1,0 +1,41 @@
+
+.comments .media-heading {
+    margin-top: 25px;
+}
+
+.comments .comment-info {
+    margin-left: 6px;
+    margin-top: 21px;
+}
+
+.comments .comment-info .btn {
+    font-size: 0.8em;
+}
+
+.comments .comment-info .fa {
+    line-height: 10px;
+}
+
+.comments .media-body p {
+    position: relative;
+    background: #F7F7F7;
+    padding: 15px;
+    margin-top: 50px;
+}
+
+.comments .media-body p::before {
+    background-color: #F7F7F7;
+    box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
+    content: "\00a0";
+    display: block;
+    height: 30px;
+    left: 20px;
+    position: absolute;
+    top: -13px;
+    transform: rotate( 135deg );
+    width:  30px;
+}
+
+.white {
+    color: #fff;
+}

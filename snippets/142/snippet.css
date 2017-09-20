@@ -1,0 +1,95 @@
+
+.content{
+    background-image: url(http://lorempixel.com/600/600/technics/7/);
+}
+.list-inline .option{
+  width: 80px; height: 30px;  
+}
+.major {
+    font-weight: 600;
+}
+.base-header {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: inherit;
+}
+.em-background-box .em-background-box-actions {
+    margin-top: 15px;
+    min-height: 50px;
+}
+.semi-well-dk {
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+}
+.semi-well-dk, .semi-well-lt {
+    border-radius: 6px;
+    padding: 20px;
+}
+.img-em-border {
+    border: 8px solid rgba(255,255,255,0.3);
+}
+.img-circle {
+    border-radius: 50%;
+}
+img {
+    vertical-align: middle;
+}
+.line-icon-circle {
+    border: 1px solid rgba(242,244,248,0.7);
+    border-radius: 50%;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    color: #fff;
+    -webkit-transition: border-color 0.3s;
+    -moz-transition: border-color 0.3s;
+    -o-transition: border-color 0.3s;
+    transition: border-color 0.3s;
+}
+
+.thin {
+    font-weight: 300;
+}
+h1, .h1 {
+    font-size: 33px;
+}
+.list-inline {
+    margin-left: -5px;
+}
+.list-unstyled, .list-inline {
+    padding-left: 0;
+    list-style: none;
+}
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.em-background-box .em-background-box-content {
+    position: relative;
+    z-index: 2;
+}
+.container-fluid {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.navbar+.em-background-box {
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+.em-background-box {
+    border-bottom: 4px solid #5bc0de;
+}
+.em-background-box {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: relative;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+.text-white {
+    color: white;
+}                    

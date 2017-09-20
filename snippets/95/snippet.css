@@ -1,0 +1,50 @@
+/* Snippet One */
+
+body {
+    background-color: #F5683D;
+}
+
+div.member_signin {
+    text-align: center;
+}
+
+div.member_signin  i.fa.fa-user {
+    color: #FFF;
+    background-color: #FFD202;
+    border-radius: 500px;
+    font-size: 36px;
+    padding: 15px 20px 15px 20px;
+}
+
+div.fa_user {
+    margin-top: -47px;
+    margin-bottom: 15px;
+}
+
+p.member {
+    font-size: 19px;
+    color: #888888;
+    margin-bottom: 20px;
+}
+
+button.login {
+    width: 100%;
+    text-transform: uppercase;
+}
+
+form.loginform div.input-group {
+    width: 100%;
+}
+
+form.loginform input[type="email"], form.loginform input[type="password"] {
+    color: #6C6C6C;
+    text-align: center;
+}
+
+p.forgotpass {
+    margin-top: 10px;
+}
+
+p.forgotpass a {
+    color: #F5683D;
+}

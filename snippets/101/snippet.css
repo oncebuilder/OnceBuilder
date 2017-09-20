@@ -1,0 +1,83 @@
+/* CSS Document */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+	background: #2980b9;
+	font-size:18px;
+	line-height: 32px;
+	color: #333;
+	word-wrap:break-word !important;
+	font-family: 'Open Sans', sans-serif;
+	}
+
+
+h1 {
+	font-size: 60px;
+	text-align: center;
+	color: #FFF;
+}	
+
+h3 {
+	font-size: 30px;
+	text-align: center;
+	color: #FFF;
+}
+
+h3 a {
+	color: #FFF;
+}
+
+a {
+	color: #FFF;
+}
+
+#accordion {
+	margin:100px auto;
+	padding:0;
+	max-width:1160px;
+	}
+	
+#accordion li {
+	list-style:none;
+	}
+	
+#accordion li.content {
+	margin:0;
+	padding: 20px;
+	border: 1px solid #efefef;
+	background: #FFF;
+	}
+	
+#accordion li.title {
+	padding:10px;
+	
+	font-size:1.2em;
+	line-height:2em;
+	font-size: 26px;
+	color:#FFF;
+	
+	background: #3498db;
+	border-bottom: 1px solid #2980b9;
+	}
+	
+#accordion .hide {
+	display:none;
+	}
+
+
+#relatedContent {
+  max-width: 800px;
+  margin: 50px auto;
+}
+
+#relatedContent .item {
+  max-width: 44%;
+  padding: 3%;
+  float: left;
+  text-align: center;
+}
+
+#relatedContent .item a img {
+  max-width: 100%;
+}	

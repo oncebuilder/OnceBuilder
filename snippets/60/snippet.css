@@ -1,0 +1,21 @@
+/*Created by: Assad Ullah Chaudhry.*/
+
+
+*{padding: 0; margin:0;}
+#clear{clear:both;}
+#info{color:white; font-family:courier; font-size:20px; position:relative; text-align:center; top:100px;}
+#wrapper{position: fixed; top:0; bottom:0; width:100%; background-image: url(./images/fiber.jpg); background-repeat: no-repeat; background-size:100% 100%;}
+#login-wrapper{width:550px; margin:300px auto;  position:relative}
+#input-wrapper{ width:90%; float:left; z-index: 1;}
+.input-controls{margin-bottom:15px;}
+.input-controls label{color:white; font-family: Courier; font-size:25px; }
+.input-controls input{width:63%; padding:15px; border:none; background-color:#4D4D4D; color:white; font-size:17px; font-family:courier;}
+.input-controls input:hover, 
+.input-controls input:active,
+.input-controls input:focus{border:none; outline:none;} 
+.input-controls a{padding-left:140px; color:#4D94DB; font-family:courier; text-decoration:none;}
+.input-controls a:hover{text-decoration:underline;}
+#login-btn{padding:5px; background-image: url(./images/bg.png); background-position: center; background-size:100% 100%;  border-radius:100px; -moz-border-radius:100px; -webkit-border-radius:100px; height:70px; width:70px; position: absolute; right:30px; top:15px; z-index:100;}
+#login-btn button{ width:60px; height: 60px; border-radius:100px; -moz-border-radius:100px; -webkit-border-radius:100px; background-image:url(./images/btn.png); background-repeat:no-repeat; background-size:100% 100%; background-color:black; border:black; margin-top:5px; margin-left:7px;}
+#login-btn button:active{border:1px black inset;}
+#login-btn button:focus{outline:none;}

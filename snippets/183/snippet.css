@@ -1,0 +1,32 @@
+
+.title{
+ width:80%;
+ font-size:18px;
+ margin:auto;
+}
+
+.panel-circle{
+    -moz-border-radius: 20%;
+    -webkit-border-radius: 20%;
+    border-radius: 20%;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.08);
+}
+
+.panel-heading {
+    padding: 5px 15px;
+}
+
+.panel-footer {
+    padding: 1px 15px;
+	color: #A0A0A0;
+}
+
+.profile-img {
+	width: 96px;
+	height: 96px;
+	margin: 0 auto 10px;
+	display: block;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+}                    

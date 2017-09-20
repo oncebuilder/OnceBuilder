@@ -1,0 +1,5 @@
+#footer-credits {min-height: 305px; background: #e1e1e1; font-size: 14px;}
+#footer-credits .img-responsive{display: table; margin: 0 auto;}
+#footer-credits .contributors-slider{margin: 0 auto; display: table;}
+#footer-credits .contributors-slider div{display: inline-block; margin: 0 20px;}
+#footer-credits .content-more{text-align: center;}

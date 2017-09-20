@@ -1,0 +1,4 @@
+
+$(function(){
+ $('.tip').tooltip();
+});                    

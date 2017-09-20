@@ -1,0 +1,59 @@
+
+@import url(&#039;http://fonts.googleapis.com/css?family=Open+Sans:200,300&#039;);
+
+body{
+    font-family: &#039;Open Sans&#039;,Arial,Helvetica,Sans-Serif;
+    background: none repeat scroll 0 0 #ebeeed;
+}
+.port-image{
+    width:400px;
+    height:400px;
+}
+
+.media {
+    background: none repeat scroll 0 0 #fff;
+    border-bottom: 1px solid #c7c9c8;
+    margin-bottom: 30px;
+}
+
+.media a {
+    overflow: hidden;
+}
+
+.media-img {
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+}
+
+.media-img .img-overlay {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.4);
+    height: 100%;
+    opacity: 0;
+    padding-top: 50%;
+    position: absolute;
+    text-align: center;
+    transition: opacity 0.3s ease-out 0s;
+    visibility: hidden;
+    width: 100%;
+    z-index: 4;
+}
+
+.media:hover .img-overlay a, .media .img-overlay:hover a {
+    display: inline-block;
+}
+
+.media:hover .img-overlay, .media .media-img:hover .img-overlay {
+    opacity: 1;
+    transition: opacity 0.3s ease-out 0s;
+    visibility: visible;
+}
+
+.media div.media-img img {
+    height: auto;
+    transform: scale(1, 1);
+    transition-duration: 2000ms;
+    transition-timing-function: ease-out;
+    width: 100%;
+}
+

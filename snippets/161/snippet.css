@@ -1,0 +1,13 @@
+
+.panel .panel-heading {
+    background-color: #FFFFFF;
+    border-color: #FFFFFF;
+    color: #262626;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.panel .panel-heading a {
+    font-size: 11px;
+    font-weight: 400;
+}

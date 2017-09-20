@@ -1,0 +1,104 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 show-focus-status">
+            <div class="alert alert-danger">
+                <strong>Out of Focus!</strong> This demo does support the use of your keyboard to change dates! But since it is contained within an iframe you must first click here!
+            </div>
+            <div class="alert alert-success hidden">
+                <strong>In Focus!</strong> You can use your left and right arrow keys to change the date of the first date picker. Try it out now!
+            </div>
+        </div>
+    </div>
+	<div class="row">
+        <div class="col-sm-4">
+            <h2>By Day</h2>
+            <hr/>
+            <div class="date-picker"  data-date="2014/09/02" data-keyboard="true">
+                <div class="date-container pull-left">
+                    <h4 class="weekday">Monday</h4>
+                    <h2 class="date">Februray 4th</h2>
+                    <h4 class="year pull-right">2014</h4>
+                </div>
+                <span data-toggle="datepicker" data-type="subtract" class="fa fa-angle-left"></span>
+                <span data-toggle="datepicker" data-type="add" class="fa fa-angle-right"></span>
+                <div class="input-group input-datepicker">
+                    <input type="text" class="form-control" data-format="YYYY/MM/DD" placeholder="YYYY/MM/DD">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                </div>
+                <span data-toggle="calendar" class="fa fa-calendar"></span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h2>By Week</h2>
+            <hr/>
+            <div class="date-picker">
+                <div class="date-container pull-left">
+                    <h4 class="weekday">Monday</h4>
+                    <h2 class="date">Februray 4th</h2>
+                    <h4 class="year pull-right">2014</h4>
+                </div>
+                <span data-toggle="datepicker" data-type="subtract" data-amt="7" class="fa fa-angle-left pull-left"></span>
+                <span data-toggle="datepicker" data-amt="7" class="fa fa-angle-right pull-right"></span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h2>Start Date</h2>
+            <hr/>
+            <div class="date-picker" data-date="2014/10/31">
+                <div class="date-container pull-left">
+                    <h4 class="weekday">Monday</h4>
+                    <h2 class="date">Februray 4th</h2>
+                    <h4 class="year pull-right">2014</h4>
+                </div>
+                <span data-toggle="datepicker" data-type="subtract" data-amt="1" class="fa fa-angle-left pull-left"></span>
+                <span data-toggle="datepicker" data-amt="1" class="fa fa-angle-right pull-right"></span>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>By Month</h2>
+            <hr/>
+            <div class="date-picker" data-type="months">
+                <div class="date-container pull-left">
+                    <h4 class="weekday">Monday</h4>
+                    <h2 class="date">Februray 4th</h2>
+                    <h4 class="year pull-right">2014</h4>
+                </div>
+                <span data-toggle="datepicker" data-type="subtract" class="fa fa-angle-left pull-left"></span>
+                <span data-toggle="datepicker" class="fa fa-angle-right pull-right"></span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h2>By Year</h2>
+            <hr/>
+            <div class="date-picker" data-type="year" data-date="2014/12/25">
+                <div class="date-container pull-left">
+                    <h4 class="weekday">Monday</h4>
+                    <h2 class="date">Februray 4th</h2>
+                    <h4 class="year pull-right">2014</h4>
+                </div>
+                <span data-toggle="datepicker" data-type="subtract" class="fa fa-angle-left pull-left"></span>
+                <span data-toggle="datepicker" class="fa fa-angle-right pull-right"></span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h2>Formatting</h2>
+            <hr/>
+            <div class="date-picker" data-date="2014/10/31">
+                <div class="date-container pull-left">
+                    <h4 class="weekday" data-format="ddd">Monday</h4>
+                    <h2 class="date" data-format="MMM Do">Februray 4th</h2>
+                    <h4 class="year pull-right" data-format="YY">2014</h4>
+                </div>
+                <span data-toggle="datepicker" data-type="subtract" data-amt="1" class="fa fa-angle-left pull-left"></span>
+                <span data-toggle="datepicker" data-amt="1" class="fa fa-angle-right pull-right"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>

@@ -1,0 +1,76 @@
+
+.jumbotron h1, .jumbotron .h1 {
+    font-size: 25px;
+}
+.social-resume .facebook {
+    background: #3b5998;
+}
+
+.social-resume .google-plus {
+    background:#DD4B39;
+}
+
+.social-resume .twitter {
+    background: #00acee;
+}
+
+.social-resume .youtube {
+    background: #c4302b;
+}
+.social-resume .icon-content, .social-resume .value {
+    display: inline-block;
+    text-align: center;
+}
+
+.social-resume .value  {
+    float: right;
+
+}
+
+.social-resume .value h1, .social-resume .value p  {
+    margin: 0;
+    padding: 0;
+    color: #c6cad6;
+}
+
+.social-resume .value h1 {
+    font-weight: 300;
+}
+
+.social-resume .icon-content i {
+    color: #fff;
+    font-size: 50px;
+    -webkit-border-radius: 100%;
+       -moz-border-radius: 100%;
+        -ms-border-radius: 100%;
+         -o-border-radius: 100%;
+            border-radius: 100%;
+    -webkit-border: 2px solid #fff;
+       -moz-border: 2px solid #fff;
+        -ms-border: 2px solid #fff;
+         -o-border: 2px solid #fff;
+            border: 2px solid #fff;
+    width: 85px;
+    height: 85px;
+    padding-top: 17px;
+    box-shadow:3px 3px 3px #000000;
+}
+
+.social-resume .icon-content {
+    width: 40%;
+    padding: 25px 15px;
+    -webkit-border-radius: 4px 0px 0px 4px;
+       -moz-border-radius: 4px 0px 0px 4px;
+        -ms-border-radius: 4px 0px 0px 4px;
+         -o-border-radius: 4px 0px 0px 4px;
+            border-radius: 4px 0px 0px 4px;
+}
+
+.social-resume .value {
+    width: 58%;
+    padding-top: 31px;
+}
+
+.social-resume section.panel{
+    border: none;
+}

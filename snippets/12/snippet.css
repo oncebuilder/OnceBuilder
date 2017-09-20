@@ -1,0 +1,11 @@
+
+body {
+    background: #2E95EF;
+    background-image: -moz-radial-gradient(center 45deg,circle cover, #9BD1FF, #2E95EF);
+    background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%,800, from(#9BD1FF), to(#2E95EF));
+    padding-top: 15%;
+}
+.img-error{
+width:220px;
+height:220px;
+}

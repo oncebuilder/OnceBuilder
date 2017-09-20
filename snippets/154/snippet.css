@@ -1,0 +1,7 @@
+#signup .input-group {
+    margin-bottom: 1em;
+}
+
+#signup .input-group.nom{
+    margin-bottom: 0;
+}

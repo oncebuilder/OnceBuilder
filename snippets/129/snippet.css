@@ -1,0 +1,523 @@
+/*
+ // Inspiration taken from Mike | Creative Mints
+ // - Dribbble.com page -> http://drbl.in/ghSU
+ 
+ Tried to keep it clean and documented. It&#039;s not absolutely perfect and I haven&#039;t tested it in many of the older browsers, 
+ but I will try and tweak it when I see an issue or someone mentions it. Always love the work the designers over at Dribbble.com
+ put together. I wanted to attempt to mimic their photoshop work and provide some fun widgets for you Bootstrappers.
+ 
+ - Brian Moeller
+ 
+*/
+
+@font-face {
+    font-family: &#039;weather&#039;;
+    src: url(&#039;https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/artill_clean_icons-webfont.eot&#039;);
+    src: url(&#039;https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/artill_clean_icons-webfont.eot?#iefix&#039;) format(&#039;embedded-opentype&#039;),
+         url(&#039;https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/artill_clean_icons-webfont.woff&#039;) format(&#039;woff&#039;),
+         url(&#039;https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/artill_clean_icons-webfont.ttf&#039;) format(&#039;truetype&#039;),
+         url(&#039;https://s3-us-west-2.amazonaws.com/s.cdpn.io/93/artill_clean_icons-webfont.svg#artill_clean_weather_iconsRg&#039;) format(&#039;svg&#039;);
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+    padding: 45px 0;
+    font: 14px &#039;Open Sans&#039;, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    color: #8F7F70;
+
+    background: #dec8bb; /* Old browsers */
+    /* IE9 SVG, needs conditional override of &#039;filter&#039; to &#039;none&#039; */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2RlYzhiYiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjMxJSIgc3RvcC1jb2xvcj0iI2FjOGU3NCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjY2JSIgc3RvcC1jb2xvcj0iI2JkYTI4NSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4NzZkNTIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top,  #dec8bb 0%, #ac8e74 31%, #bda285 66%, #876d52 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dec8bb), color-stop(31%,#ac8e74), color-stop(66%,#bda285), color-stop(100%,#876d52)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #dec8bb 0%,#ac8e74 31%,#bda285 66%,#876d52 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #dec8bb 0%,#ac8e74 31%,#bda285 66%,#876d52 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #dec8bb 0%,#ac8e74 31%,#bda285 66%,#876d52 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #dec8bb 0%,#ac8e74 31%,#bda285 66%,#876d52 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=&#039;#dec8bb&#039;, endColorstr=&#039;#876d52&#039;,GradientType=0 ); /* IE6-8 */
+}
+
+
+
+/*-- BS3 Modified Classes --*/
+.panel {
+    border: none;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+.panel-body {
+    padding: 20px;
+}
+.panel-heading {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.panel-footer {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+
+
+
+/*-- Common Use Classes --*/
+.btn-ui {
+    background-color: #E55F3A;
+    border-color: #C54A28;
+    color: #fff;
+}
+.btn-ui:hover {
+    background-color: #E0624C;
+    color: #fff;
+}
+.list-block {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+}
+.list-block ul {
+    display: table-row;
+}
+.list-block li {
+    display: table-cell;
+    margin: 0;
+}
+.pad-left-0 {
+    padding-left: 0px;
+}
+.pad-right-0 {
+    padding-right: 0px;
+}
+.mrg-btm-10 {
+    margin-bottom: 10px;
+}
+.mrg-btm-20 {
+    margin-bottom: 20px;
+}
+
+
+
+
+/*-- Weather Widget --*/
+#weather-widget i {
+  color: #fff;
+  font-family: weather;
+  font-size: 1.5em;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.0;
+}
+#weather-widget .panel-heading {
+    background-color: #55BC75;
+    color: #fff;
+    padding-bottom:20px;
+}
+#weather-widget #current {
+    font-size: 4em;
+    margin-bottom: -20px;
+}
+#weather-widget .panel-footer {
+    background-color: #F5F0EC;
+    padding: 20px;
+    border: none;
+}
+
+
+/* Weather icons */
+.icon-0:before { content: ":"; }
+.icon-1:before { content: "p"; }
+.icon-2:before { content: "S"; }
+.icon-3:before { content: "Q"; }
+.icon-4:before { content: "S"; }
+.icon-5:before { content: "W"; }
+.icon-6:before { content: "W"; }
+.icon-7:before { content: "W"; }
+.icon-8:before { content: "W"; }
+.icon-9:before { content: "I"; }
+.icon-10:before { content: "W"; }
+.icon-11:before { content: "I"; }
+.icon-12:before { content: "I"; }
+.icon-13:before { content: "I"; }
+.icon-14:before { content: "I"; }
+.icon-15:before { content: "W"; }
+.icon-16:before { content: "I"; }
+.icon-17:before { content: "W"; }
+.icon-18:before { content: "U"; }
+.icon-19:before { content: "Z"; }
+.icon-20:before { content: "Z"; }
+.icon-21:before { content: "Z"; }
+.icon-22:before { content: "Z"; }
+.icon-23:before { content: "Z"; }
+.icon-24:before { content: "E"; }
+.icon-25:before { content: "E"; }
+.icon-26:before { content: "3"; }
+.icon-27:before { content: "a"; }
+.icon-28:before { content: "A"; }
+.icon-29:before { content: "a"; }
+.icon-30:before { content: "A"; }
+.icon-31:before { content: "6"; }
+.icon-32:before { content: "1"; }
+.icon-33:before { content: "6"; }
+.icon-34:before { content: "1"; }
+.icon-35:before { content: "W"; }
+.icon-36:before { content: "1"; }
+.icon-37:before { content: "S"; }
+.icon-38:before { content: "S"; }
+.icon-39:before { content: "S"; }
+.icon-40:before { content: "M"; }
+.icon-41:before { content: "W"; }
+.icon-42:before { content: "I"; }
+.icon-43:before { content: "W"; }
+.icon-44:before { content: "a"; }
+.icon-45:before { content: "S"; }
+.icon-46:before { content: "U"; }
+.icon-47:before { content: "S"; }
+
+
+
+/*-- Profile Widget --*/
+#profile-widget .panel-heading {
+    min-height: 200px;
+    background: #fff url(http://4hdwallpapers.com/wp-content/uploads/2013/04/The-Lion-King-Desktop-1024x640.jpg) no-repeat top center;
+    background-size: cover;
+}
+#profile-widget .media-heading {
+    color: #5B5147;
+}
+#profile-widget .panel-body {
+    padding: 20px;
+}
+#profile-widget .panel-body .img-circle {
+    height: 90px;
+    width: 90px;
+    padding: 8px;
+    border: 1px solid #e2dfdc;
+}
+#profile-widget .panel-footer {
+    padding: 0px;
+    border: none;
+}
+#profile-widget .panel-footer .btn-group .btn {
+    border: none;
+    font-size: 1.2em;
+    background-color: #F6F1ED;
+    color: #BAACA3;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding: 15px 0;
+}
+#profile-widget .panel-footer .btn-group .btn:hover {
+    color: #F6F1ED;
+    background-color: #8F7F70;
+}
+#profile-widget .panel-footer .btn-group>.btn:not(:first-child) {
+    border-left: 1px solid #fff;
+}
+#profile-widget .panel-footer .btn-group .highlight {
+    color: #E56E4C;
+}
+
+
+
+/*-- Login Widget --*/
+#login-widget .panel-body .input-group {
+    margin-bottom: 15px;
+}
+#login-widget .panel-footer {
+    padding: 0px;
+    border: none;
+}
+#login-widget .panel-footer .login-btn {
+    padding: 20px 20px 10px 20px;
+}
+#login-widget .panel-footer .facebook {
+    background-color: #5F90B0;
+    color: #fff;
+    padding: 15px;
+    display: block;
+}
+
+
+
+/*-- Pie Chart Widget --*/
+#pie-chart-widget .panel-body {
+    padding: 0px;
+}
+#pie-chart-widget .panel-footer {
+    background-color: #fff;
+    padding: 0px;
+    margin-top: 20px;
+}
+#pie-chart-widget .panel-footer .btn {
+    border: none;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding: 20px 0px;
+    color: #fff;
+    background-color: #776B5F;
+    border-top: 3px solid #6d6257;
+}
+#pie-chart-widget .panel-footer .btn:hover {
+    background-color: #62584C;
+    border-color: #52483F;
+}
+#pie-chart-widget h2 {
+    font-weight: 700;
+    margin: 3px 0 0 0;
+}
+#pie-chart-widget .legend li {
+    background-color: #F5F0EC;
+    padding: 20px 10px;
+}
+#pie-chart-widget .legend li:not(:first-child) {
+    border-left: 1px solid #fff;
+}
+#pie-chart-widget .legend .video {   
+    border-top: 4px solid #4DAF7C; 
+}
+#pie-chart-widget .legend .audio {
+    border-top: 4px solid #EAC85D;
+}
+#pie-chart-widget .legend .photo {
+    border-top: 4px solid #E25331;
+}
+
+
+
+
+
+/*-- Line Chart Widget --*/
+#myLineChart {
+    background-color: #55BC75;
+    padding: 0px 5px;
+    margin: 0px;
+}
+#myBarChart {
+    margin-top: 10px;
+}
+#line-chart-widget .panel-heading {
+    background-color: #55BC75;
+    color: #fff;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+#line-chart-widget .panel-heading small {
+    color: #fff;
+}
+#line-chart-widget .panel-heading .label {
+    background-color: rgba(0,0,0,0.1);
+    padding: 5px;
+}
+#line-chart-widget .panel-body {
+    padding: 0px;
+}
+#line-chart-widget .panel-footer {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 0px;
+    border-top: none;
+}
+#line-chart-widget .panel-footer li {
+    padding: 10px 0;
+}
+#line-chart-widget h3 {
+    font-weight: 700;
+    margin: 0px;
+}
+#line-chart-widget li {
+    width:50%;
+}
+#line-chart-widget .legend li {
+    background-color: #F5F0EC;
+    padding: 20px 0;
+}
+#line-chart-widget .legend li:not(:first-child) {
+    border-left: 1px solid #fff;
+}
+#line-chart-widget .chart-block>div {
+    margin-top: 20px;
+    width:55%;
+}
+#line-chart-widget .chart-block>div:last-child {
+    padding-left: 15px;
+    width:45%;
+}
+#line-chart-widget .chart-block .change {
+    color:#fff;
+    font-size: 1.6em;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #55BC75;
+    width:100%;
+}
+#line-chart-widget .chart-block .change i {
+    font-size: .6em;
+}
+
+
+
+
+
+/*-- Social Button Widget --*/
+#social-widget {
+    border: 0px;
+}
+#social-widget .btn:not(:first-child) {
+    border-top: 1px solid #F5F0EC;
+}
+#social-widget .btn{
+    background-color: #fff;
+    border: 0px;
+    padding:20px;
+}
+#social-widget .facebook .fa-circle {
+    color: #5F90AE;
+}
+#social-widget .facebook:hover {
+    background-color: #5F90AE;
+}
+#social-widget .pinterest .fa-pinterest {
+    color: #D34F4D;
+}
+#social-widget .pinterest:hover{
+    background-color: #D34F4D;
+}
+#social-widget .pinterest:hover .fa-pinterest{
+    color: #fff;
+}
+#social-widget .twitter .fa-circle {
+    color: #2AB5DE;
+}
+#social-widget .twitter:hover {
+    background-color: #2AB5DE;
+}
+
+
+
+
+
+/*-- Navigation Widget --*/
+#nav-widget {
+    border: 0px;
+    margin-bottom:20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+#nav-widget .btn-group:not(:first-child) {
+    border-left: 1px solid #F5F0EC;
+}
+#nav-widget .btn{
+    background-color: #fff;
+    border: 0px;
+    padding: 20px;
+    font-weight: 600;
+    border-bottom: 3px solid #fff;
+}
+#nav-widget .btn:hover {
+    background-color: #F8F3F0;
+    color: #64584C;
+    border-bottom: 3px solid #55BC75;
+}
+#nav-widget i.fa {
+    padding-right: 5px;
+}
+#nav-widget .badge {
+    font-size: .7em;
+    background-color: #E7663F;
+    margin-left:4px;
+    top: -10px;
+}
+
+
+
+
+
+/*-- User Widget --*/
+#user-widget {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+#user-widget .list-group-item {
+    border:0;
+    color: #8F7F70;
+    padding: 15px;
+    border-left: 3px solid #fff;
+}
+#user-widget a.list-group-item:hover {
+    background-color: #F8F3F0;
+    color: #64584C;
+    border-left: 3px solid #55BC75;
+}
+#user-widget a.list-group-item:hover i.fa {
+    color: #E35935;
+}
+#user-widget .heading {
+    color: #8F7F70;
+    background-color: #B1A599;
+    border-left: 3px solid #B1A599;
+}
+#user-widget .heading .text-wrap {
+    padding: 20px 0;
+}
+#user-widget .img-circle {
+    height: 90px;
+    width: 90px;
+    padding: 8px;
+    border: 1px solid #9C9084;
+    margin-right: 10px;
+    float:left;
+}
+#user-widget .heading .list-group-item-heading {
+    font-weight: 600;
+    color: #fff;
+}
+
+
+
+
+
+@media only screen and (max-width: 767px) { /* phones */
+    #nav-widget .btn {
+        text-align: left;
+    }
+    #nav-widget .btn-group:not(:first-child) {
+        margin: 0px;
+        border-left: 0px;
+        border-top: 1px solid #F5F0EC;
+    }
+    .btn-group>.btn {
+        border-radius: 0;
+    }
+    .btn-group>.btn:last-child {
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    .btn-group-justified>.btn, .btn-group-justified>.btn-group {
+        float: left;
+        width: 100%;
+    }
+    .btn-group>.btn-group>.btn {
+        border-radius: 0;
+    }
+    .btn-group .btn+.btn, .btn-group .btn+.btn-group, .btn-group .btn-group+.btn, .btn-group .btn-group+.btn-group {
+        margin-left: 0px;
+    }
+    .btn-group>.btn-group:first-child>.btn:last-child {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+    .btn-group>.btn-group:last-child>.btn:last-child {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+}
+
+
+
+

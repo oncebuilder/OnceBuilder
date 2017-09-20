@@ -1,0 +1,24 @@
+#loginPlugin .colorgraph {margin-top: 25px; height: 5px; border: 0; background: #3C8DBC; border-radius: 3px;
+	background-image: -webkit-linear-gradient(left, #3C8DBC, #3C8DBC 12.5%, #669aea 12.5%, #669aea 25%, #7ba5e3 25%, #7ba5e3 37.5%, #96b7e7 37.5%, #96b7e7 62.5%, #7ba5e3 62.5%, #7ba5e3 75%, #669aea 75%, #669aea 87.5%, #3C8DBC 87.5%, #3C8DBC);
+	background-image: -moz-linear-gradient(left, #3C8DBC, #3C8DBC 12.5%, #669aea 12.5%, #669aea 25%, #7ba5e3 25%, #7ba5e3 37.5%, #96b7e7 37.5%, #96b7e7 62.5%, #7ba5e3 62.5%, #7ba5e3 75%, #669aea 75%, #669aea 87.5%, #3C8DBC 87.5%, #3C8DBC);
+	background-image: -o-linear-gradient(left, #3C8DBC, #3C8DBC 12.5%, #669aea 12.5%, #669aea 25%, #7ba5e3 25%, #7ba5e3 37.5%, #96b7e7 37.5%, #96b7e7 62.5%, #7ba5e3 62.5%, #7ba5e3 75%, #669aea 75%, #669aea 87.5%, #3C8DBC 87.5%, #3C8DBC);
+	background-image: linear-gradient(to right, #3C8DBC, #3C8DBC 12.5%, #669aea 12.5%, #669aea 25%, #7ba5e3 25%, #7ba5e3 37.5%, #96b7e7 37.5%, #96b7e7 62.5%, #7ba5e3 62.5%, #7ba5e3 75%, #669aea 75%, #669aea 87.5%, #3C8DBC 87.5%, #3C8DBC);
+}
+
+#loginPlugin .message{display: none; text-align: center;}
+#loginPlugin .message-error{text-align: left;}
+#loginPlugin img{display: table; margin: 0 auto; margin-bottom: 25px; margin-top: 45px;}
+#loginPlugin p{font-size: 13px;}
+
+#loginForm{display: block;}
+#loginForm label{font-size: 13px; width: 100%;}
+#loginForm label a{cursor: pointer; font-weight: normal;}
+#loginForm input{border-radius: 2px;}
+
+#remindForm{display: none;}
+#remindForm p{font-size: 13px;}
+#remindForm input{border-radius: 2px;}
+
+#changeForm{display: none;}
+#changeForm p{font-size: 13px;}
+#changeForm input{border-radius: 2px;}

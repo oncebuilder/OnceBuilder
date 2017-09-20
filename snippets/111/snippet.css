@@ -1,0 +1,28 @@
+
+body {
+    background: #2E95EF;
+    background-image: -moz-radial-gradient(center 45deg,circle cover, #9BD1FF, #2E95EF);
+    background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%,800, from(#9BD1FF), to(#2E95EF));
+    padding-top: 15%;
+}
+
+.img-home {
+    max-width: 335px;
+    height:335px;
+    
+}
+
+.img-content{
+    margin-right:40px;
+}
+
+.title {
+    color: #fff;
+    text-shadow: 1px 1px 0 #888;
+    line-height: normal;
+    font-weight: 1em;
+    font-family: serif;
+    font-size: 40px;
+    margin-bottom: 10px;
+    font-weight:bold;
+}

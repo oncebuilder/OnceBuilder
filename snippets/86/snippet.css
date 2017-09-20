@@ -1,0 +1,17 @@
+
+body{margin-top:20px;}	
+body {padding:20px;}
+h1{ background: none repeat scroll 0 0 #5BC0DE; color:#fff!important; padding:10px 0; text-align:center; margin-bottom:20px!important;}
+p.cr{font-size:0.75em; color:#666; background:#eee; padding:5px; margin-top:20px;}
+p.cr > strong{color:#F1645E;}
+
+.debug > .row > div {box-shadow: inset 1px -1px 1px #444, inset -1px 1px 1px #444;
+}
+
+.debug > .row > div:nth-child(3n+1) {background-color: #5F8EFC;}
+.debug > .row > div:nth-child(3n+2) {background-color: #FEBA00;}
+.debug > .row > div:nth-child(3n) {background-color: #F1645E;}
+  
+.img1{background:url(http://lorempixel.com/400/300/sports/3/);width:400px;height:300px !important;}
+.img2{background:url(http://lorempixel.com/400/300/sports/4/);width:400px;height:300px !important;}
+.img3{background:url(http://lorempixel.com/400/300/sports/5/);width:400px;height:300px !important;}

@@ -1,0 +1,86 @@
+<div class="container">
+
+  <div class="row">
+    <h2>Grid Column Re-ordering</h2>
+    
+    <small>Resize this page, and order of columns will change.
+    <a href="http://bootsnipp.com/iframe/d0jrk" target="_blank">View full screen</a>
+    </small>
+    
+    <hr>
+
+    <div class="col-md-4 col-md-push-4">
+      <div class="alert alert-danger">B</div>
+      <img class="img-responsive img-circle" src="https://farm1.staticflickr.com/1/2759520_6dea8b9007.jpg" alt="Greece-1173 - Temple of Athena by Dennis Jarvis, on Flickr">
+    </div>
+
+    <div class="col-md-4 col-md-pull-4 ">
+      <div class="alert alert-info">A</div>
+      <img class="img-responsive img-circle" src="https://farm2.staticflickr.com/1109/809710325_4289dc484e.jpg" alt="Greece-1173 - Temple of Athena by Dennis Jarvis, on Flickr">
+    </div>
+
+    <div class="col-md-4">
+      <div class="alert alert-success">C</div>
+      <img class="img-responsive img-circle" src="https://farm3.staticflickr.com/2353/2216602404_679d01cd4b.jpg" alt="Greece-1173 - Temple of Athena by Dennis Jarvis, on Flickr">
+    </div>
+
+  </div>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-12">
+<h3>Column Order</h3>
+
+<h4>HTML Order</h4>
+<code> B A C </code>
+<br>
+<small>The push and pull happens on desktop size - not small screens.</small>
+
+
+
+<h4>Desktop Order</h4>
+<code> A B C </code>
+
+<h4>Small Screen Order</h4>
+<small>same as in HTML</small>
+<code><br>
+B<br>
+A<br>
+C<br>
+<br>    
+</code>
+
+    <p>
+      Bootstrap is a mobile first framework. This means that the order of the columns in your HTML markup should represent the order in which you want them displayed on mobile devices. This would also mean that the pushing and pulling is done on the larger
+      desktop views.
+    </p>
+
+
+    <p>The two statements below summarize the functionality of the push and pull classes and should give you the full understanding of how they work, and how they should be used.</p>
+
+    <p><code>col-vp-push-x</code> = push the column to the <strong>right</strong> by <code>x</code> number of columns, starting from where the column would normally render (<code>position: relative</code>), on a <code>vp</code> or larger view-port.</p>
+
+    <p><code>col-vp-pull-x</code> = pull the column to the <strong>left</strong> by <code>x</code> number of columns, starting from where the column would normally render (<code>position: relative</code>), on a <code>vp</code> or larger view-port.</p>
+
+    <p><code>vp</code> = <em>xs, sm, md, or lg (minimum viewport)</em>
+    </p>
+
+    <p><code>x</code> = <em>1 thru 12 (number of columns)</em>
+    </p>
+
+    <p><a href="http://getbootstrap.com/css/#grid-column-ordering" target="_blank">Bootstrap Doc Reference</a></p>
+    
+    <p><a href="http://www.schmalz.io/2014/10/08/Column-Ordering-in-Bootstrap/" target="_blank">Reference</a></p>  
+    <hr>
+
+<p><a href="http://validator.w3.org/check?uri=http%3A%2F%2Fbootsnipp.com%2Fiframe%2Fd0jrk" target="_blank"><small>HTML</small><sup>5</sup></a></p>
+          
+<p><a href="https://github.com/twbs/bootlint" target="_blank"><small>Checked with Bootlint</small></a></p>    
+<br>
+<hr>
+</div>
+</div>
+  
+</div>

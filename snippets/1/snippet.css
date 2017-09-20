@@ -1,0 +1,20 @@
+.overview{padding-top: 50px;}
+.overview h1{text-transform:uppercase;}
+.overview,.service-block{text-align:center;}
+.overview .lead{margin:40px 10%;margin-bottom:80px;}
+
+#footer-contact {min-height: 305px; background: #F3F3F3; font-size: 14px; border-top: 15px solid #e7e7e7; padding-bottom: 50px;}
+#footer-contact input[type="submit"]{display: table; margin: 0 auto;}
+#footer-contact input{border-radius: 1px;}
+#footer-contact textarea{border-radius: 1px;}
+#footer-contact .form-control[disabled], fieldset[disabled] .form-control{cursor: unset;}
+#footer-contact .form-control:focus{box-shadow: unset;}
+
+#footer-contact input.error{border: 1px solid red;}
+#footer-contact input.valid{border: 1px solid #CCCCCC;}
+
+#footer-contact textarea.error{border: 1px solid red;}
+#footer-contact textarea.valid{border: 1px solid #CCCCCC;}
+
+#footer-contact .message-sent{display: none; color: green; text-align: center;}
+#footer-contact .message-error{display: none; color: red; padding-bottom: 20px;}

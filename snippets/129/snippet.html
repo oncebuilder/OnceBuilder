@@ -1,0 +1,237 @@
+<!-- 
+ // Inspiration taken from Mike | Creative Mints
+ // - Dribbble.com page -> http://drbl.in/ghSU
+ 
+ Tried to keep it clean and documented. It's not absolutely perfect and I haven't tested it in many of the older browsers, 
+ but I will try and tweak it when I see an issue or someone mentions it. Always love the work the designers over at Dribbble.com
+ put together. I wanted to attempt to mimic their photoshop work and provide some fun widgets for you Bootstrappers.
+ 
+ ** Brian Moeller
+-->
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- Docs at http://simpleweatherjs.com -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.simpleWeather/3.0.2/jquery.simpleWeather.min.js"></script>
+<!-- Docs at http://www.chartjs.org -->
+<script src="//www.chartjs.org/assets/Chart.min.js"></script>
+<div class="container">
+   <div class="row">
+      <div class="col-sm-12">
+         <!--
+            ****** NAVIGATION WIDGET *******
+            -->
+         <div id="nav-widget" class="btn-group btn-group-justified">
+            <div class="btn-group">
+               <button type="button" class="btn text-uppercase"><i class="fa fa-map-marker fa-2x"></i>  Check In<span class="badge">6</span></button>
+            </div>
+            <div class="btn-group">
+               <button type="button" class="btn text-uppercase"><i class="fa fa-bell fa-2x"></i>  Events</button>
+            </div>
+            <div class="btn-group">
+               <button type="button" class="btn text-uppercase"><i class="fa fa-user fa-2x"></i>  Account</button>
+            </div>
+            <div class="btn-group">
+               <button type="button" class="btn text-uppercase"><i class="fa fa-cog fa-2x"></i>  Settings</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+   
+   <div class="row">
+      <!-- COLUMN ONE -->
+      <div class="col-sm-6 col-md-4">
+         <!--
+            ****** LINE CHART WIDGET *******
+            -->    
+         <div id="line-chart-widget" class="panel">
+            <div class="panel-heading">
+               <h4 class="text-uppercase"><strong>Apple Inc.</strong><span class="label pull-right">107.26 <i class="fa fa-plus"></i>0.23(0.10%)</span><br><small>Nasdaq: AAPL</small></h4>
+            </div>
+            <div class="panel-body">
+               <canvas id="myLineChart"></canvas>
+            </div>
+            <div class="panel-footer">
+               <div class="list-block">
+                  <ul class="text-center legend">
+                     <li>
+                        <h3>13.5 M</h3>
+                        Shares Traded
+                     </li>
+                     <li>
+                        <h3>28.44 B</h3>
+                        Market Cap
+                     </li>
+                  </ul>
+               </div>
+               <div class="chart-block clearfix">
+                  <div class="pull-left">
+                     Monthly Volume
+                     <canvas id="myBarChart"></canvas>
+                  </div>
+                  <div class="pull-right">
+                     Yearly Change<br>
+                     <div class="change text-center"><i class="fa fa-plus"></i> 86.01</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-xs-3">
+               <!--
+                  ****** SOCIAL BUTTON WIDGET *******
+                  -->
+               <div id="social-widget" class="btn-group-vertical mrg-btm-20">
+                  <button type="button" class="btn facebook"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-facebook fa-stack-1x fa-inverse"></i></span></button>
+                  <button type="button" class="btn pinterest"><i class="fa fa-pinterest fa-3x"></i></button>
+                  <button type="button" class="btn twitter"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-twitter fa-stack-1x fa-inverse"></i></span></button>
+               </div>
+            </div>
+            <div class="col-xs-9">
+               <!--
+                  ****** WEATHER WIDGET *******
+                  -->
+               <div id="weather-widget" class="panel">
+                  <div class="panel-heading text-center">
+                     <div id="current"></div>
+                     New York, NY
+                  </div>
+                  <div class="panel-footer">
+                     <div id="hiTemp" class="col-xs-6 text-center"></div>
+                     <div id="wind" class="col-xs-6 text-center"></div>
+                     <div class="clearfix"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      
+      <!-- COLUMN TWO -->   
+      <div class="col-sm-6 col-md-4">
+         <!--
+            ****** CHART WIDGET *******
+            -->    
+         <div id="pie-chart-widget" class="panel">
+            <div class="panel-heading text-center">
+               <h5 class="text-uppercase"><strong>Data Transfer</strong></h5>
+            </div>
+            <div class="panel-body">
+               <canvas id="myPieChart"></canvas>
+            </div>
+            <div class="panel-footer">
+               <div class="list-block">
+                  <ul class="text-center legend">
+                     <li class="video" style="margin-right: 1px;">
+                        video 
+                        <h2>62%</h2>
+                     </li>
+                     <li class="photo">
+                        photo 
+                        <h2>21%</h2>
+                     </li>
+                     <li class="audio" style="margin-left: 1px;">
+                        audio 
+                        <h2>10%</h2>
+                     </li>
+                  </ul>
+               </div>
+               <div class="btn-group btn-group-justified text-uppercase text-center">
+                  <a class="btn btn-default" role="button"><i class="fa fa-cloud-upload fa-2x"></i><br><small>Upload Files</small></a>
+                  <a class="btn btn-default" role="button"><i class="fa fa-share-alt fa-2x"></i><br><small>Share Link</small></a>
+                  <a class="btn btn-default" role="button"><i class="fa fa-history fa-2x"></i><br><small>Back Up</small></a>
+               </div>
+            </div>
+         </div>
+         <!--
+            ****** LOGIN WIDGET *******
+            -->             
+         <div id="login-widget" class="panel" >
+            <form id="loginform" class="form-horizontal" role="form">
+               <div class="panel-heading text-center">
+                  <h5 class="text-uppercase"><strong>Login to your account</strong></h5>
+               </div>
+               <div class="panel-body">
+                  <label for="login-email">Email</label>
+                  <div class="input-group">
+                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                     <input id="login-email" type="text" class="form-control input-lg" name="email" value="" placeholder="email">  
+                  </div>
+                  <label for="login-email">Password</label>
+                  <div class="input-group">
+                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                     <input id="login-password" type="password" class="form-control input-lg" name="password" placeholder="password">
+                  </div>
+               </div>
+               <div class="panel-footer text-center">
+                  <div class="login-btn">
+                     <a href="#" class="btn btn-ui btn-lg btn-block mrg-btm-10"><i class="fa fa-play-circle"></i> Sign In</a>
+                     <a href="#"><small>Forgot Username or Password?</small></a>
+                  </div>
+                  <a href="#" class="facebook"><i class="fa fa-lg fa-facebook-square"></i> Login with Facebook</a>             
+               </div>
+            </form>
+         </div>
+      </div>
+      
+      
+      <!-- COLUMN THREE -->
+      <div class="col-sm-6 col-md-4 ">
+         <!--
+            ****** PROFILE WIDGET *******
+            -->
+         <div id="profile-widget" class="panel">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+               <div class="media">
+                  <a class="pull-left" href="#">
+                  <img class="media-object img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/flashmurphy/128.jpg">
+                  </a>
+                  <div class="media-body">
+                     <h2 class="media-heading">John Raymons</h2>
+                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  </div>
+               </div>
+            </div>
+            <div class="panel-footer">
+               <div class="btn-group btn-group-justified">
+                  <a class="btn btn-default" role="button"><i class="fa fa-eye"></i> 172</a>
+                  <a class="btn btn-default" role="button"><i class="fa fa-comment"></i> 34</a>
+                  <a class="btn btn-default highlight" role="button"><i class="fa fa-heart"></i> 210</a>
+               </div>
+            </div>
+         </div>
+         <!--
+            ****** USER WIDGET *******
+            -->
+         <div id="user-widget" class="list-group">
+            <div class="list-group-item heading">
+               <img class="media-object img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/ademilter/128.jpg">
+               <div class="text-wrap">
+                  <h4 class="list-group-item-heading">Richard Willams</h4>
+                  <p class="list-group-item-text">15,421 followers</p>
+               </div>
+               <div class="clearfix"></div>
+            </div>
+            <a href="#" class="list-group-item">
+               <i class="fa fa-user fa-lg pull-right"></i>
+               <p class="list-group-item-text">Edit user</p>
+            </a>
+            <a href="#" class="list-group-item">
+               <i class="fa fa-bar-chart-o fa-lg pull-right"></i>
+               <p class="list-group-item-text">Web statistics</p>
+            </a>
+            <a href="#" class="list-group-item">
+               <i class="fa fa-wrench fa-lg pull-right"></i>
+               <p class="list-group-item-text">Upload settings</p>
+            </a>
+            <a href="#" class="list-group-item">
+               <i class="fa fa-calendar fa-lg pull-right"></i>
+               <p class="list-group-item-text">Events</p>
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+</div>

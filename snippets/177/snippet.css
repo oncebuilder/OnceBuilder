@@ -1,0 +1,54 @@
+
+a:hover {
+ text-decoration:none;    
+}
+
+.panel-group .panel-heading {
+
+    background: white;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.title-lg > span {
+    display: inline-block;
+    position: relative;
+    padding: 0 20px 15px;
+    border-bottom: 1px solid #e9e9e9;
+    font-weight: 700;
+}
+.menu-lg > .item {
+  padding: 10px 20px;
+  margin-bottom: 2px;
+  background: #f6f6f6;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+}
+.menu-lg > .item > .fa {
+  float: left;
+  margin-top: 10px;
+  font-size: 28px;
+}
+.menu-lg > .item > .content {
+  overflow: hidden;
+  margin-left: 50px;
+}
+.menu-lg > .item .title {
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.menu-lg > .item .title a {
+  text-decoration: none;
+  color: #505050;
+}
+.menu-lg > .item .description {
+  font-size: 13px;
+}
+.panel-group .panel-body {
+    font-size: 13px;
+    background: #f6f6f6;
+    -webkit-box-shadow: inset 0 0 3px 1px rgba(0, 0, 0, 0.03);
+    box-shadow: inset 0 0 3px 1px rgba(0, 0, 0, 0.03);
+}                    

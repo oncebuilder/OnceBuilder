@@ -1,0 +1,35 @@
+#users-management .panel-heading {
+    height: 55px;
+}
+
+#users-management h4 {
+    line-height: 35px;
+}
+
+#users-management .panel-heading img {
+    width: 32px;
+    margin-right: 0.25em;
+}
+
+#users-management .panel-body img {
+    margin: 0 1em 1em 0;
+}
+
+@media (max-width: 460px) {
+    #users-management .panel-heading .btn-group .btn span {
+        display: none;
+    }
+
+    #users-management .panel-heading img {
+        display: none;
+    }
+
+    #users-management .panel-heading .btn-group .btn {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    #users-management .panel-heading h4 {
+        font-size: 13px;
+    };
+}

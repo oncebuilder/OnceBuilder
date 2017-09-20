@@ -1,0 +1,17 @@
+#about-us{background: #fff; color: #000; min-height: 405px; border-top: 15px solid #41A5E0; padding-bottom: 30px;}
+
+#about-us .pull-right{padding-bottom: 40px;}
+
+#about-us .device-text h4 {
+  background: url("../images/line.png") no-repeat scroll 0 100% rgba(0, 0, 0, 0);
+  color: #008ed6;
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 0.7em;
+  padding-bottom: 0.7em;
+}
+
+#about-us .device-text img{margin-top: 30px; width: 320px;}
+
+#about-us .col-md-5 img{dispaly: table; margin: 0 auto; margin-bottom: 50px;}

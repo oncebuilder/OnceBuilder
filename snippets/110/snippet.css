@@ -1,0 +1,179 @@
+#button{
+    position: absolute;
+    top:40%;
+    left:43%;
+    height:10%;
+    width:14%;
+    background-color:orange;
+    -webkit-transition:all 0.25s ease-in;
+    -moz-transition:all 0.25s ease-in 0s;
+    border-radius: 5px;
+    color: white;
+    border-bottom-width: 9px;
+    border-bottom-style: ridge;
+    border-bottom-color: orangered;
+    cursor: pointer;
+ cursor: hand;
+}
+
+#button:hover{
+    background-color: #ffba3d;
+    border-bottom-color: #ff5819;
+}
+   
+#modal{
+    position: absolute;
+    top:50%;
+    left:50%;
+    height:0px;
+    width:0px;
+    background-color: rgb(230,98,73);
+    border-style:solid;
+    border-color:rgb(230,98,73);
+    border-radius: 7px;
+    border-width:0px;
+    opacity: 0;
+    -webkit-transition:all 0.5s ease;
+    -moz-transition:all 0.5s ease 0s;
+    box-shadow: -8px 8px rgba(0,0,0,0.2);
+
+}
+   
+#close{
+    position: absolute;
+    top:-20px;
+    right:-20px;
+    height:40px;
+    width:40px;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: rgb(230,98,73);
+    border-width: 2px;
+    cursor: pointer;
+ cursor: hand;
+    background-color: white;
+    box-shadow: -4px 4px black;
+    box-shadow: -4px 4px rgba(0,0,0,0.5);
+}
+   
+#line1{
+    position: absolute;
+    top:10%;
+    height: 80%;
+    left: 45%;
+    width:10%;
+    background-color: black;
+    -ms-transform: rotate(30deg); /* IE 9 */
+    -webkit-transform: rotate(30deg); /* Safari */
+    transform: rotate(30deg);
+    -webkit-transition:all 0.2s ease;
+    -moz-transition:all 0.2s ease 0s;
+}
+   
+#line2{
+    position: absolute;
+    top:10%;
+    height: 80%;
+    left: 45%;
+    width:10%;
+    background-color: black;
+    -ms-transform: rotate(-39deg); /* IE 9 */
+    -webkit-transform: rotate(-30deg); /* Safari */
+    transform: rotate(-30deg);
+    -webkit-transition:all 0.2s ease;
+    -moz-transition:all 0.2s ease 0s;
+}
+   
+    #copyright{
+        position: absolute;
+        top:0px;
+        height:6%;
+        left:0px;
+        width:100%;
+        text-align: center;
+     }
+   
+    #copyright a{
+        color:black;
+    }
+   
+
+#close:hover #line1{
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Safari */
+    transform: rotate(45deg);
+    opacity: 0.7;
+}
+   
+#close:hover #line2{
+    -ms-transform: rotate(-45deg); /* IE 9 */
+    -webkit-transform: rotate-(45deg); /* Safari */
+    transform: rotate(-45deg);
+    opacity: 0.7;
+}
+   
+#success{
+    position: absolute;
+    top:10%;
+    left:40.5%;
+    height:100px;
+    width:100px;
+    border-radius: 50%;
+    background-image: url(http://jkjautomotive.com/img/tick.png);
+    background-size: 60% 60%;
+    background-position:  center;
+    background-color: white;
+    background-repeat: no-repeat;
+}
+   
+#modalPartition{
+    position: absolute;
+    bottom:0px;
+    left:0px;
+    height:30%;
+    width:100%;
+    background-color: white;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+   
+#modalText{
+    position: absolute;
+    top:38%;
+    height:25%;
+    width:100%;
+    left:0%;
+    text-align: center;
+    color:white;
+}
+   
+#partitionArrow{
+    position: absolute;
+    left:48%;
+    width:20px;
+    top:-10px;
+    height:20px;
+    -ms-transform: rotate(-45deg); /* IE 9 */
+    -webkit-transform: rotate-(45deg); /* Safari */
+    transform: rotate(-45deg);
+    background-color: rgb(230,98,73);
+}
+   
+#partitionButton{
+    position: absolute;
+    top:30%;
+    left:30%;
+    width:40%;
+    height:60%;
+
+}
+
+.btn-block{
+    background-color: rgb(230,98,73);
+    border-color: rgb(230,98,73);
+}
+   
+.btn-block:hover{
+    background-color: rgb(212,90,67);
+    border-color: rgb(212,90,67);
+}
