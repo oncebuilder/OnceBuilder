@@ -36,6 +36,10 @@ require_once('../once/class/core.class.php');
 $once=new core($_CONFIG);
 
 if($_GET['path']!='layers' && $_GET['path']!='pages') exit;
+
+// Is it required??
+if(!preg_match("/^[a-zA-Z0-9_.]+$/i",$_GET['file'])) exit;
+
 # PAGE START -------------------
 echo '
 <!DOCTYPE html>

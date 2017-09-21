@@ -23,6 +23,10 @@ header('Access-Control-Allow-Headers: x-requested-with');
 $_GET['o'] = isset($_GET['o']) ? $_GET['o'] : '';
 $_GET['c'] = isset($_GET['c']) ? $_GET['c'] : '';
 
+// Is it required??
+if(!preg_match("/^[a-zA-Z0-9_.]+$/i",$_GET['c'])) exit;
+if(!preg_match("/^[0-9]+$/i",$_GET['plugin_id'])) exit;
+
 // Secure var
 $home=true;
 
