@@ -1,4 +1,4 @@
-[![MIT License][license-image]][license-url]
+[![MIT License](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/2000px-License_icon-mit-88x31-2.svg.png)](https://opensource.org/licenses/MIT)
 
 ## THIS IS ONLY PROTOTYPE
 
@@ -76,7 +76,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 
 [subscribe](https://oncebuilder.com/subscribe)
-
-
-[license-image]]: https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/2000px-License_icon-mit-88x31-2.svg.png
-[license-url]: https://opensource.org/licenses/MIT
