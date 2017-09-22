@@ -1,4 +1,4 @@
-[![MIT License][license-image]][license-url]
+[![MIT License](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/200px-License_icon-mit-88x31-2.svg.png)](https://opensource.org/licenses/MIT)
 
 ## THIS IS ONLY PROTOTYPE
 
