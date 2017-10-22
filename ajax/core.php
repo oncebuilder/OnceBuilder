@@ -12,7 +12,7 @@
 if(!$home){exit;}
 
 // Initialize connector class
-$once = new once($_CONFIG);
+$once = new core($_CONFIG);
 $once->set_data(array("ajax" => true, "csrf_token" => $_GET['csrf_token']));
 
 switch($_GET['o']){

@@ -123,13 +123,6 @@ once.users = {
 		}else{
 			$("#editForm").submit();
 		}
-		
-		// Save selected source or just item edit
-		if($("#user-data").data("tab")!==undefined){
-			$($("#user-data").data("tab")+" form").submit();
-		}else{
-			$("#editForm").submit();
-		}
 	},
 	itemNew: function(obj){//ok
 		// Call to item_new for new item

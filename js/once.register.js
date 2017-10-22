@@ -9,11 +9,9 @@
 */
 $(document).ready(function () {
 	// Load code mirror library & modes
-	once.loadJSfile('/once/libs/jquery-form/jquery.form.js');
-	//once.loadJSfile('//oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js');
-	once.loadJSfile('/once/libs/jquery-validation/dist/jquery.validate.js');
-	//once.loadJSfile('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js');
-	
+	once.loadJSfile(once.path+'/libs/jquery-form/jquery.form.js');
+	once.loadJSfile(once.path+'/libs/jquery-validation/dist/jquery.validate.js');
+
 	if($("#registerPlugin").length>0){
 		// First validate
 		var container = $('.message-error');
@@ -65,18 +63,13 @@ once.register.forms = {
 		var options = {
 			dataType:  "json",
 			success: function(data){
-				// If response ok refresh logo
 				if(data.status=='ok'){
-					$("#registerPlugin .message-error").hide();
 					$("#registerPlugin .message-registred").show();
+					$("#registerPlugin .message-error").hide();
 
 					$("#registerForm").hide();
-					
 					console.log("Activation sent!");
 				}else{
-					$("#registerPlugin .message-sent").hide();
-					$("#registerPlugin .message-error").show();
-					
 					var str='';
 					var length=data.errors.length;
 					if(length>0){
@@ -88,6 +81,9 @@ once.register.forms = {
 					$("#registerPlugin .message-error").find("ol").show();
 					$("#registerPlugin .message-error").find("ol").html(str);
 
+					$("#registerPlugin .message-sent").hide();
+					$("#registerPlugin .message-error").show();
+					
 					console.log("Action Error: "+data.error);
 				}
 			},

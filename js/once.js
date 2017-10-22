@@ -11,13 +11,14 @@ window.console = console;
 
 var once={
 	api: false,
+	api_key: false,
 	cms: false,
 	admin: false,
 	creator: false,
+	path: '/once',
 	CSSfiles: [],
 	JSfiles: [],
 	editors: [],
-	path: '/once',
 	animation: false,
 	note: [],
 	// Microtime counter
@@ -51,21 +52,17 @@ var once={
 		// Prepend loader
 		if(!$("#loader").length){
 			// Append at end of the body
-			$("body").append('<div id="loader"></div>');
+			$("body").append('<div id="loader" style="display: none;"></div>');
 		}
 
 		// Prepend notifications
-		if(!$("#note").length){
-			var str='';
-			str+='<div id="note" style="display: none;">';
-				str+='test';
-			str+='</div>';
+		if(!$("#notifications").length){
 			// Append at end of the body
-			$("body").append(str);
+			$("body").append('<div id="notifications" style="display: none;"></div>');
 		}
 		
 		// Onclick notifications
-		$("#note").click(function () {
+		$("#notifications").click(function () {
 			if(once.animation){
 				once.animation=false;
 			}else{
@@ -116,6 +113,13 @@ var once={
 			once.CSSfiles.push(src);
 		}
 	},
+
+	// Load code mirror library & modes
+	//once.loadJSfile('/once/libs/jquery-form/jquery.form.js');
+	//once.loadJSfile('//oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js');
+	//once.loadJSfile('/once/libs/jquery-validation/dist/jquery.validate.js');
+	//once.loadJSfile('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js');
+	
 	// Load javascript file in <head> by using jquery
 	loadJSfile: function(src){
 		if($.inArray(src,once.JSfiles)==-1){

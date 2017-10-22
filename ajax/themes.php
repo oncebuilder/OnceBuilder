@@ -150,7 +150,43 @@ switch($_GET['o']){
 	}break;
 	//############################ WEBSITE ##################################################
 	
-	
+	case 'item_user_buy':{
+		$once->set_data(array(
+			"theme_id" => intval($_GET['id'])
+		));
+		$once->item_user_buy();
+	}break;
+	case 'item_user_publish':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_publish();
+	}break;
+	case 'item_user_fork':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_fork();
+	}break;
+	case 'item_user_vote':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_vote();
+	}break;
+	case 'item_user_download':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_download();
+	}break;
+	case 'item_user_report':{
+		$once->set_data(array(
+			"id" => intval($_GET['id']),
+			"message" => $once->filter_string($_POST['message'])
+		));
+		$once->item_user_report();
+	}break;
 	
 	//############################ OTHER ##################################################
 	default:

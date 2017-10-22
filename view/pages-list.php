@@ -176,6 +176,7 @@ if(isset($types['items'])){
 									<tr>
 										<th></th>
 										<th></th>
+										<th>Name</th>
 										<th>Title</th>
 										<th>Layer</th>
 										<th>Route</th>
@@ -189,11 +190,14 @@ if(isset($types['items'])){
 										<tr id="item_'.$data['items'][$key]['id'].'" data-id="'.$data['items'][$key]['id'].'">
 											<td class="small-col"><input type="checkbox" name="ids['.$data['items'][$key]['id'].']"/></td>
 											<td class="small-col"><i class="fa fa-star'.($data['items'][$key]['stared']==0?'-o':'').' item-star"></i></td>
+											<td class="item-name" data-link="name">'.$data['items'][$key]['name'].'</td>
 											<td class="item-name" data-link="title">'.$data['items'][$key]['title'].'</td>
 											<td data-link="layer_id" data-layer_id='.$data['items'][$key]['layer_id'].'>'.$layers_a[$data['items'][$key]['layer_id']].'</td>
 											<td data-link="route_id" data-route_id='.$data['items'][$key]['route_id'].'>'.$routes_a[$data['items'][$key]['id']].'</td>
 											<td>
 												<a class="item-edit" title="page edit: '.$data['items'][$key]['id'].'" style="cursor: pointer;"><i class="fa fa fa-edit"></i></a>
+													&nbsp;&nbsp;
+												<a class="item-code" title="page code edit: '.$data['items'][$key]['id'].'" style="cursor: pointer;"><i class="fa fa fa-code"></i></a>
 													&nbsp;&nbsp;
 												<a class="item-delete" title="page delete" style="cursor: pointer;"><i class="fa fa-trash-o"></i></a>
 											</td>

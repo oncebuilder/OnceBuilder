@@ -80,10 +80,8 @@ class once extends core{
 		//$mail->addAttachment('images/phpmailer_mini.png');
 
 		//send the message, check for errors
-		if (!$mail->send()) {
-			$obj['error']=$mail->ErrorInfo;
-		} else {
-			$obj['status']='ok';
+		if(!$mail->send()){
+			$this->set_error($mail->ErrorInfo);
 		}
 	}
 	
@@ -97,21 +95,18 @@ class once extends core{
 			$stmt->bindParam('id', $this->data['id'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 
 			// Check if snippet exist.
-			if($obj['item']){
-				if($obj['item']['hire_form']){
+			if($this->item){
+				if($this->item['hire_form']){
 					// Prepare statements to get vote.
 					$stmt = $this->pdo->prepare("SELECT id FROM edit_users_messages WHERE user_id=:user_id AND user_to=:user_to AND mktime+5000>".($this->data['time'])." LIMIT 1");
 					$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 					$stmt->bindParam(':user_to', $this->data['id'], PDO::PARAM_INT);
 					$stmt->execute();
 
-					$obj['star'] = $stmt->fetch(PDO::FETCH_ASSOC);
-							
-					// Check if snippet exist.
-					if(!$obj['star']){
+					if(!$stmt->rowCount()){
 						// Prepare statements to insert vote.
 						$stmt = $this->pdo->prepare("
 							INSERT INTO edit_users_messages (user_id, user_to, mktime, message) 
@@ -124,33 +119,28 @@ class once extends core{
 						$stmt->execute();
 						
 						// if set settings send email
-						if($obj['item']['email']!=''){
-							$this->data['user_email']=$obj['item']['email'];
-							if($obj['item']['username']!=''){
-								$this->data['username']=' sent by '.$obj['item']['username'];
+						if($this->item['email']!=''){
+							$this->data['user_email']=$this->item['email'];
+							if($this->item['username']!=''){
+								$this->data['username']=' sent by '.$this->item['username'];
 							}
 							$this->send_hire_message();
+						}else{
+							$this->set_error('Email is empty');
 						}
-						
-						$obj['status']='ok';
 					}else{
-						$obj['errors'][]='you can not send more message to this user';
-						$obj['error']++;
+						$this->set_error('You can not send more message in 5min');
 					}
 				}else{
-					$obj['errors'][]='user not allow to send hire form message';
-					$obj['error']++;
+					$this->set_error('User not allow to send hire form message');
 				}
 			}else{
-				$obj['errors'][]='you can not send more message in 5min';
-				$obj['error']++;
+				$this->set_error('You can not send more message to this user');
 			}	
 		}else{
-			$obj['errors'][]='user not logged';
-			$obj['error']++;
+			$this->set_error('User not logged');
 		}
-		// Print JSON object
-		echo json_encode($obj);
+		return $this->once_response();
 	}
 	
 	function get_user_data(){
@@ -198,8 +188,8 @@ class once extends core{
 		$stmt->execute();
 		
 		$data['items'] = array();
-		while($wiersz = $stmt->fetch(PDO::FETCH_ASSOC)){
-			$data['items'][] = $wiersz;
+		while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+			$data['items'][] = $row;
 		}
 		
 		return $data;
@@ -217,115 +207,73 @@ class once extends core{
 		$stmt->execute();
 		
 		$data['items'] = array();
-		while($wiersz = $stmt->fetch(PDO::FETCH_ASSOC)){
-			$data['items'][] = $wiersz;
+		while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+			$data['items'][] = $row;
 		}
 		
 		return $data;
 	}
 	
 	function item_follow(){
-		if($this->data['user_logged']){
-			if($this->once_csrf_token_check($this->data['csrf_token'])){
-				// Prepare statements to get selected id.
-				$stmt = $this->pdo->prepare("SELECT id FROM edit_users_follows WHERE user_id=:user_id AND followed_id=:followed_id");
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_logged_check()){
+			// Prepare statements to get selected id.
+			$stmt = $this->pdo->prepare("SELECT id FROM edit_users_follows WHERE user_id=:user_id AND followed_id=:followed_id");
+			$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
+			$stmt->bindParam(':followed_id', $this->data['id'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			if(!$stmt->rowCount()){
+				// Prepare statements to insert tutorial.
+				$stmt = $this->pdo->prepare("
+					INSERT INTO edit_users_follows (user_id, followed_id) 
+					VALUES (:user_id, :followed_id)
+				");
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->bindParam(':followed_id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->execute();
-
-				if(!$stmt->rowCount()){
-					// Prepare statements to insert tutorial.
-					$stmt = $this->pdo->prepare("
-						INSERT INTO edit_users_follows (user_id, followed_id) 
-						VALUES (:user_id, :followed_id)
-					");
-					$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
-					$stmt->bindParam(':followed_id', $this->data['id'], PDO::PARAM_INT);
-					$stmt->execute();
 					
-					if($stmt->rowCount()){
-						// Get last insert id
-						$lastInsertId=$this->pdo->lastInsertId();
-						
-						$this->once_set_user_count('following');
-
-						$this->data['user_id']=$this->data['id'];
-						$this->once_set_user_count('followers');
-						
-						
-						$obj['status']='ok';
-					}
+				if($stmt->rowCount()){
+					// Get last insert id
+					$this->once_set_user_count('following');
+					$this->data['user_id']=$this->data['id'];
+					$this->once_set_user_count('followers');
 				}else{
-					$obj['errors'][]='You are already following!';
-					$obj['error']++;
+					$this->set_error('Can not unfollow!');
 				}
 			}else{
-				$obj['errors'][]='CSFR token invalid!';
-				$obj['error']++;
+				$this->set_error('You are already follower!');
 			}
-		}else{
-			$obj['errors'][]='user not logged';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 	
 	function item_unfollow(){
-		if($this->data['user_logged']){
-			if($this->once_csrf_token_check($this->data['csrf_token'])){
-				// Prepare statements to get selected id.
-				$stmt = $this->pdo->prepare("SELECT id FROM edit_users_follows WHERE user_id=:user_id AND followed_id=:followed_id");
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_logged_check()){
+			// Prepare statements to get selected id.
+			$stmt = $this->pdo->prepare("SELECT id FROM edit_users_follows WHERE user_id=:user_id AND followed_id=:followed_id");
+			$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
+			$stmt->bindParam(':followed_id', $this->data['id'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			if($stmt->rowCount()){
+				// Prepare statements to insert tutorial.
+				$stmt = $this->pdo->prepare("DELETE FROM edit_users_follows WHERE user_id=:user_id AND followed_id=:followed_id");
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->bindParam(':followed_id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->execute();
-
-				if($stmt->rowCount()){
-					// Prepare statements to insert tutorial.
-					$stmt = $this->pdo->prepare("DELETE FROM edit_users_follows WHERE user_id=:user_id AND followed_id=:followed_id");
-					$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
-					$stmt->bindParam(':followed_id', $this->data['id'], PDO::PARAM_INT);
-					$stmt->execute();
 					
-					if($stmt->rowCount()){
-						$this->once_set_user_count('following',-1);
-
-						$this->data['user_id']=$this->data['id'];
-						$this->once_set_user_count('followers',-1);
-						
-						$obj['status']='ok';
-					}else{
-						$obj['errors'][]='can not unfollow!';
-						$obj['error']++;
-					}
+				if($stmt->rowCount()){
+					$this->once_set_user_count('following',-1);
+					$this->data['user_id']=$this->data['id'];
+					$this->once_set_user_count('followers',-1);
 				}else{
-					$obj['errors'][]='You aren\'t following!';
-					$obj['error']++;
+					$this->set_error('Can not unfollow!');
 				}
 			}else{
-				$obj['errors'][]='CSFR token invalid!';
-				$obj['error']++;
+				$this->set_error('You are not follower!');
 			}
-		}else{
-			$obj['errors'][]='user not logged';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 
 }

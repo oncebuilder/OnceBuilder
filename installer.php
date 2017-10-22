@@ -85,15 +85,18 @@ if(isset($_POST['install'])){
 			$config.="?>\n";
 			file_put_contents('./config.php',$config);
 
+			
+			$hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+				
 			// Prepare statements to get plugin.
 			$stmt = $pdo->query("SELECT id FROM edit_users WHERE login='".$_POST['login']."' AND type_id=1 LIMIT 1");
 			if($stmt->rowCount()){
 				// Get id if creator account exists
 				$user['item']=$stmt->fetch(PDO::FETCH_ASSOC);
-				$pdo->query("UPDATE `edit_users` SET `password`='".md5($_POST['password'])."' WHERE id='".$user['item']['id']."' LIMIT 1");
+				$pdo->query("UPDATE `edit_users` SET `password`='".$hash."' WHERE id='".$user['item']['id']."' LIMIT 1");
 			}else{
 				// Create creator account
-				$pdo->query("INSERT INTO `edit_users` (`id`, `login`, `password`, `type_id`) VALUES (NULL, '".$_POST['login']."', '".md5($_POST['password'])."', '1');");
+				$pdo->query("INSERT INTO `edit_users` (`id`, `login`, `password`, `type_id`) VALUES (NULL, '".$_POST['login']."', '".$hash."', '1');");
 				$user['item']['id']=$pdo->lastInsertId();
 			}
 

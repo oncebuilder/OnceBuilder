@@ -32,15 +32,14 @@ echo '
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 		
 		<!-- Latest compiled and minified modernizr -->
-		<link rel="stylesheet" href="plugin.css">
-		
-		<!-- Latest compiled and minified modernizr -->
-		<script src="plugin.js"></script>
+		<link rel="stylesheet" href="plugin.css?'.time().'">
 	</head>
 	<body>';
 		# PAGE GRIDS -------------------
 		require_once('plugin.php');
 		echo '
+		<!-- Latest compiled and minified modernizr -->
+		<script src="plugin.js?'.time().'"></script>
 	</body>
 </html>';
 ob_end_flush(); 

@@ -19,9 +19,9 @@ once.about = {
 			url: once.path+"/ajax.php?c=about&o=check_server&id=1",
 			success: function(data) { 
 				if(data.status=='ok'){
-					var str='<p>'+data.server_info;
-					if(data.server_status==1){
-						str+='<a href="http://oncebuilder.com/download"><button class="btn btn-default btn-sm pull-right item-link" type="button"> Check for update</button></a>'
+					var str='<p>'+data.item.server_info;
+					if(data.item.server_status==1){
+						str+='<a href="https://oncebuilder.com/download"><button class="btn btn-default btn-sm pull-right item-link" type="button"> Check for update</button></a>'
 					}else{
 						str+='<button class="btn btn-default btn-sm pull-right disabled" type="button"> Updated</button>'
 					}

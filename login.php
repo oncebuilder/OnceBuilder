@@ -103,41 +103,42 @@ if(isset($_CONFIG['datahost']) && $_CONFIG['datahost']!=''){
 }
 
 # CLASS -------------------
-//require_once('./class/core.class.php');
-//$once=new core($_CONFIG);
+require_once('./class/core.class.php');
+$once=new core($_CONFIG);
 
 # FUNCTION -------------------
 if(!isset($_POST['install']) && isset($_POST['login']) && isset($_POST['password'])){
-	$_POST['password_md5']=md5($_POST['password']);
+	$hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 	// Prepare statements to get selected data
-	$stmt = $pdo->prepare("SELECT * FROM edit_users WHERE login=:login AND password=:password LIMIT 1");
+	$stmt = $pdo->prepare("SELECT * FROM edit_users WHERE login=:login LIMIT 1");
 	$stmt->bindParam(':login', $_POST['login'], PDO::PARAM_STR, 50);
-	$stmt->bindParam(':password', $_POST['password_md5'], PDO::PARAM_STR, 50);
 	$stmt->execute();
-	
+	$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
 	// Get count of returned records
-	$obj['count']=$stmt->rowCount();
-	if($obj['count']){
-		$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
-		
-		ini_set("session.gc_maxlifetime","86400");
-		
-		// Set session
-		$_SESSION['user_logged']=true;
-					
-		// user data
-		$_SESSION['user_id']=$obj['item']['id'];
-		$_SESSION['user_login']=$obj['item']['login'];
-		$_SESSION['user_type_id']=$obj['item']['type_id'];
-		$_SESSION['user_username']=$obj['item']['username'];
-		$_SESSION['user_email']=$obj['item']['email'];
-		$_SESSION['user_balance']=$obj['item']['user_balance'];
-					
-		// user browser
-		$_SESSION['user_ip']=$_SERVER['REMOTE_ADDR'];
-		$_SESSION['user_status']=$obj['item']['status'];
-		
-		header("Location: index.php"); /* Redirect browser */
+	if($stmt->rowCount()){
+		if(!password_verify($_POST['password'], $obj['item']['password'])){
+			$once->set_error('Wrong password');
+		}else{
+			
+			ini_set("session.gc_maxlifetime","86400");
+			
+			// Set session
+			$_SESSION['user_logged']=true;
+
+			// user data
+			$_SESSION['user_id']=$obj['item']['id'];
+			$_SESSION['user_login']=$obj['item']['login'];
+			$_SESSION['user_type_id']=$obj['item']['type_id'];
+			$_SESSION['user_username']=$obj['item']['username'];
+			$_SESSION['user_email']=$obj['item']['email'];
+			$_SESSION['user_balance']=$obj['item']['user_balance'];
+						
+			// user browser
+			$_SESSION['user_ip']=$_SERVER['REMOTE_ADDR'];
+			$_SESSION['user_status']=$obj['item']['status'];
+			
+			header("Location: index.php"); /* Redirect browser */
+		}
 	}
 }
 
@@ -162,7 +163,6 @@ if(!isset($_POST['install']) && isset($_POST['login']) && isset($_POST['password
         <![endif]-->
     </head>
     <body class="bg-blue">
-
         <div class="form-box" id="login-box">
             <a href="login.php">
 				<div class="header">OnceBuilder CMS</div>

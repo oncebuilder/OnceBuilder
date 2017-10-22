@@ -18,8 +18,8 @@ $once->set_data(array("ajax" => true, "csrf_token" => $_GET['csrf_token']));
 switch($_GET['o']){
 	case 'api_key_request':{
 		$once->set_data(array(
-			"email" => $once->filter_string($_GET['email']),
-			"referer_id" => intval($_GET['referer_id'])
+			"email" => $once->filter_string($_POST['email']),
+			"referer_id" => intval($_COOKIE['referer_id'])
 		));
 		$once->api_key_request();
 	}break;

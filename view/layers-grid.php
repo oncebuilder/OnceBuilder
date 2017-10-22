@@ -18,7 +18,7 @@ $once->set_data(array(
 ));
 
 # GET DATA -------------------
-$layers=$once->once_select_items('layers','all');
+$layers=$once->once_select_items('layers','project');
 
 # GET DATA -------------------
 $layersGrid=$once->get_grid_data();

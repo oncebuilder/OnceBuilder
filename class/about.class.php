@@ -10,18 +10,20 @@
 */
 
 class once extends core{
-	function check_server(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
+	function check_server(){
 		// Check type of request $_GET -> local , $_POST -> remote
 		if($this->data['id']){
-			
-			$filename = './update.once';
-			$version=file_get_contents($filename);
-			
-			if(file_exists($filename)) {
+			if($this->once_csrf_token_check($this->data['csrf_token'])){
+				$filename = './update.once';
+				if(!file_exists($filename)) {
+					$this->item = array("version" => 1);
+					file_put_contents($filename,serialize($this->item));
+				}else{
+					$this->item = unserialize(@file_get_contents('./update.once'));
+				}
+					
+				$version=$this->item['version'];
+
 				if((filemtime($filename)+3600)>$this->data['time']){
 					// check if last check was one day ago
 					$ch = curl_init();
@@ -36,13 +38,17 @@ class once extends core{
 					curl_close($ch);
 					// Decode jsons
 					$obj=json_decode($response, true);
-					a($response);
+					$this->item=$obj['item'];
 
-					$_SESSION['user_balance']=$obj['item']['balance'];
+					if(!$obj['error']){
+						$this->item['version']=$version;
+						$_SESSION['user_balance']=$this->item['balance'];
+						file_put_contents($filename,serialize($this->item));
+					}else{
+						$this->set_error('API error authorized');
+					}
 				}
 			}
-
-			return $obj;
 		}else{
 			// Check if user exist by api_key
 			$stmt = $this->pdo->prepare("SELECT id, balance FROM edit_users WHERE api_key=:api_key LIMIT 1");
@@ -50,37 +56,24 @@ class once extends core{
 			$stmt->execute();
 
 			if($stmt->rowCount()){
-				$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
+				$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
 
 				$filename = './update.once';
 				if(!file_exists($filename)) {
 					file_put_contents($filename,1);
 				}
-
 				$version=file_get_contents($filename);
-	
+		
 				if($version>$this->data['version']){
-					$obj['server_status']='1';
-					$obj['server_info']='OnceBuilder version: 1.0.0 is outdated';
-					$obj['status']='ok';
+					$this->item['server_info']='OnceBuilder version is outdated <a href="https://oncebuilder.com/download">Check for update</a>';
 				}else{
-					$obj['server_status']='0';
-					$obj['server_info']='OnceBuilder version: 1.0.0 BETA';
-					$obj['status']='ok';
+					$this->item['server_info']='OnceBuilder version: 1.0.0 BETA';
 				}
 			}else{
-				$obj['errors'][]='API not authorized';
-				$obj['error']++;
+				$this->set_error('API not authorized');
 			}
 		}
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 }
 ?>

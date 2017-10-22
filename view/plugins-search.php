@@ -189,7 +189,7 @@ $data=$response['data'];
 					<div class="plugin-item">
 						<div class="row plugin-content">
 							<div class="col-md-3">
-							<img src="http://oncebuilder.com/once/plugins/'.$data['items'][$key]['id'].'/thumbnail.png?'.time().'" onerror="this.src=\'/once/img/plugin.png\'">
+							<img src="https://oncebuilder.com/once/plugins/'.$data['items'][$key]['id'].'/thumbnail.png" onerror="this.src=\'/once/img/plugin.png\'">
 							</div>
 							<div class="col-md-9">
 								<h3>'.$data['items'][$key]['name'].' <span><!--Updated: '.$data['items'][$key]['updated'].'--></span></h3>
@@ -214,7 +214,7 @@ $data=$response['data'];
 			if(isset($response['error'])){
 				echo '
 				<div class="col-md-12">
-					You are not subscribed. More info at <a target="_blank" href="http://oncebuilder.com/subscription">oncebuilder.com</a>
+					You are not subscribed. More info at <a target="_blank" href="https://oncebuilder.com/subscription">oncebuilder.com</a>
 				</div>';
 			}else{
 				echo '

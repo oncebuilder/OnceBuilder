@@ -24,7 +24,7 @@ switch($_GET['o']){
 	}break;
 	case 'change_password':{
 		$once->set_data(array(
-			"currentpassword" => $once->filter_string($_POST['currentpassword']),
+			"password" => $once->filter_string($_POST['password']),
 			"newpassword" => $once->filter_string($_POST['newpassword']),
 			"confirmpassword" => $once->filter_string($_POST['confirmpassword'])
 		));
@@ -73,7 +73,7 @@ switch($_GET['o']){
 	case 'account_terminiate':{
 		$once->set_data(array(
 			"reason" => $once->filter_string($_POST['reason']),
-			"currentpassword" => $once->filter_string($_POST['currentpassword'])
+			"password" => $once->filter_string($_POST['password'])
 		));
 		$once->account_terminiate();
 	}break;

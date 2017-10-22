@@ -175,9 +175,9 @@ $data=$once->once_select_items_page('snippets');
 												<td data-link="name" class="item-name">'.$data['items'][$key]['name'].'</td>
 												<td data-link="author">'.$data['items'][$key]['author'].'</td>
 												<td>
-													<a class="item-edit" title="snippet edit" style="cursor: pointer;"><i class="fa fa fa-edit"></i></a>
+													<a class="item-edit" title="snippet edit '.$data['items'][$key]['id'].'" style="cursor: pointer;"><i class="fa fa fa-edit"></i></a>
 														&nbsp;&nbsp;
-													<a class="item-delete" title="snippet delete" style="cursor: pointer;"><i class="fa fa-trash-o"></i></a>
+													<a class="item-delete" title="snippet delete '.$data['items'][$key]['id'].'" style="cursor: pointer;"><i class="fa fa-trash-o"></i></a>
 												</td>
 											</tr>';
 										}

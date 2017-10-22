@@ -36,7 +36,7 @@ $data=$once->item_preview();
 						echo '<button class="btn btn-success btn-sm pull-right item-download" type="button"><i class="fa fa-plus"></i> Download</button>';
 					}
 					?>
-					<a href="http://oncebuilder.com/plugin/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
+					<a href="https://oncebuilder.com/plugin/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
 					</h4>
 				</div>
 				<div class="modal-body">
@@ -80,7 +80,7 @@ $data=$once->item_preview();
 											<div class="plugin-item">
 												<div class="row plugin-content">
 													<div class="col-md-2">
-														<img src="http://oncebuilder.com/once/plugins/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='img/plugin.png'">
+														<img src="https://oncebuilder.com/once/plugins/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='img/plugin.png'">
 													</div>
 													<div class="col-md-10">
 														<h3><?php echo $data['item']['name'];?> <span><!--Updated: <?php echo $data['item']['created'];?> --><span style="display: inline; cursor: pointer;">by <a href="<?php echo $data['item']['author_url'];?>" target="_blank"><?php echo $data['item']['author'];?></a></span></span></h3>
@@ -106,14 +106,16 @@ $data=$once->item_preview();
 											<label for="title">Images</label>
 										</div>
 										<?php
-											for($i=1;$i<10;$i++){
+										if(isset($data['item']['images'])){
+											foreach($data['item']['images'] as $k => $v){
 												echo '
-												<div id="image_'.$i.'" class="col-md-3">
+												<div id="image_'.$k.'" class="col-md-3">
 													<div class="thumbnail image">
-														<img id="item-image" src="http://www.oncebuilder.com/once/themes/'.$_GET['id'].'/images/ss'.$i.'.png?'.time().'" onerror="this.src=\'img/theme.png\'; $(this).parent().parent().addClass(\'hidden\');">
+														<img id="item-image" src="http://www.oncebuilder.com/once/plugins/'.$_GET['id'].'/images/'.$v.'" onerror="this.src=\'img/plugin.png\'; $(this).parent().parent().addClass(\'hidden\');">
 													</div>
 												</div>';
 											}
+										}
 										?>
 									</div>
 								</div>
@@ -131,7 +133,7 @@ $data=$once->item_preview();
 <?php
 if($data['item']['price']==0){
 	for($i=1;$i<$data_sources_count;$i++){
-		echo '<code id="source_'.$i.'" class="hidden">'.$data['item'][$data_sources[$i]].'</code>';
+		echo '<code id="source_'.$i.'" class="hidden">'.rawurlencode($data['item'][$data_sources[$i]]).'</code>';
 	}
 }
 ?>

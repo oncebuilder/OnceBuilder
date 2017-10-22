@@ -365,9 +365,9 @@ once.layers = {
 					// Get grid obj
 					var grid = $('.grid-stack').data('gridstack');
 
-					str='<div id="layer_'+data.col.id+'" data-id="'+data.col.id+'"><div class="grid-stack-item-content"/>';
+					str='<div id="layer_'+data.item.id+'" data-id="'+data.item.id+'"><div class="grid-stack-item-content"/>';
 						// Grid content
-						str+='<div class="grid-delete" title="delete id: '+data.col.id+'">'
+						str+='<div class="grid-delete" title="delete id: '+data.item.id+'">'
 							str+='<a><i class="fa fa-times"></i></a>'
 						str+='</div>'
 						str+='<div class="grid-visibility">'
@@ -396,23 +396,23 @@ once.layers = {
 					grid.add_widget($(str), 1, 1, 1, 1);
 				
 					// Set DOM actions
-					$('#layer_'+data.col.id+' .grid-code').click(function () {
+					$('#layer_'+data.item.id+' .grid-code').click(function () {
 						once.layers.itemGridCode($(this));
 					});
 					
-					$('#layer_'+data.col.id+' .grid-delete').click(function () {
+					$('#layer_'+data.item.id+' .grid-delete').click(function () {
 						once.layers.itemGridDelete($(this));
 					});
 							
-					$('#layer_'+data.col.id+' .grid-edit').click(function () {
+					$('#layer_'+data.item.id+' .grid-edit').click(function () {
 						once.layers.itemGridEdit($(this));
 					});
 					
-					$('#layer_'+data.col.id+' .grid-select').change(function () {
+					$('#layer_'+data.item.id+' .grid-select').change(function () {
 						once.layers.itemGridSelect($(this));
 					});
 					
-					$('#layer_'+data.col.id+' .grid-visibility').click(function () {
+					$('#layer_'+data.item.id+' .grid-visibility').click(function () {
 						once.layers.itemGridVisibility($(this));
 					});
 				}else{
@@ -462,7 +462,7 @@ once.layers = {
 					// Set col if response ok
 					if(data.status=='ok'){
 						// Remove disabled if it was page content
-						if(data.old==-1){
+						if(data.item.old==-1){
 							$('option[value=-1]').prop("disabled",false);
 						}
 						
@@ -475,7 +475,7 @@ once.layers = {
 					}else{
 						// Restore selection
 						$('option[value=-1]').prop("disabled",true);
-						obj.find('option[value='+data.old+']').prop("selected",true);
+						obj.find('option[value='+data.item.old+']').prop("selected",true);
 						
 						console.log("Action Error: "+data.error);
 					}
@@ -631,7 +631,7 @@ once.layers.actions = {
 				$.get(tab.attr('data-ajax'), function(data) {
 					$("#ajax-grid-plugin").html(data);
 				})
-				.error(function() { console.log("Request Error: load_source"); });
+				.error(function() { console.log("Request Error: load_edit_grid_plugin"); });
 			}else if(tab.attr('href')=='#edit_grid_theme'){
 				// Reset
 				$("#ajax-grid-theme").html('');
@@ -640,7 +640,7 @@ once.layers.actions = {
 				$.get(tab.attr('data-ajax'), function(data) {
 					$("#ajax-grid-theme").html(data);
 				})
-				.error(function() { console.log("Request Error: load_source"); });
+				.error(function() { console.log("Request Error: load_edit_grid_theme"); });
 			}else if(tab.attr('href')=='#edit_grid_source'){
 				// Set other settings
 				$("#grid-data").data("editor",tab.attr('data-editor'));
@@ -691,18 +691,23 @@ once.layers.actions = {
 				
 				// Reset
 				$("#code-playground").html('');
-							
-				// Load file
-				$.getJSON("ajax.php?c=layers&o=load_source&id="+$("#grid-data").data("id")+"&file="+tab.attr('data-file'), function(data) {
-					if(data.status=='ok'){
-						// Fill editor
-						once.editors[1].setValue(data.source);
-						
-						// Set editor mode
-						once.editors[1].setOption('mode', mode);
-					}else{
-						console.log("Action Error: "+data.error);
-					}
+				
+				$.ajax({
+					type: 'POST',
+					url: once.path+"/ajax.php?c=layers&o=load_source&id="+$("#grid-data").data("id")+"&file="+tab.attr('data-file'),
+					success: function(data) { 
+						if(data.status=='ok'){
+							// Fill editor
+							once.editors[1].setValue(data.item.source);
+										
+							// Set editor mode
+							once.editors[1].setOption('mode', mode);
+						}else{
+							console.log("Action Error: "+data.error);
+						}
+					},
+					contentType: "application/json",
+					dataType: 'json'
 				})
 				.error(function() { console.log("Request Error: load_source"); });
 			}

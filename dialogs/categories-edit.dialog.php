@@ -15,7 +15,7 @@ $once->set_data(array(
 ));
 
 # GET DATA -------------------
-$data=$once->once_select_item(strtolower($_GET['module']).'_categories');
+$data=$once->once_select_item(strtolower($once->filter_html($_GET['module'])).'_categories');
 
 # GET DATA -------------------
 $once->category_get(strtolower($_GET['module']));

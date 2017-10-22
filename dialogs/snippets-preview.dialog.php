@@ -31,7 +31,7 @@ $data=$once->item_preview();
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title"><i class="fa fa-bars"></i> Snippet preview
 						<button class="btn btn-success btn-sm pull-right item-download" type="button"><i class="fa fa-plus"></i> Download</button>
-						<a href="http://oncebuilder.com/snippet/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
+						<a href="https://oncebuilder.com/snippet/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
 					</h4>
 				</div>
 				<div class="modal-body">
@@ -58,7 +58,7 @@ $data=$once->item_preview();
 											<div class="snippet-item">
 												<div class="row snippet-content">
 													<div class="col-md-2">
-														<img src="http://oncebuilder.com/once/snippets/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='/once/img/snippet.png'">
+														<img src="https://oncebuilder.com/once/snippets/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='/once/img/snippet.png'">
 													</div>
 													<div class="col-md-10">
 														<h3><?php echo $data['item']['name'];?> 
@@ -89,7 +89,7 @@ $data=$once->item_preview();
 								<div class="tab-pane" id="preview_preview">
 									<div class="row margin">
 										<div class="col-md-12">
-											<iframe src="http://oncebuilder.com/once/snippets/<?php echo $_GET['id'];?>/index.php"></iframe>
+											<iframe src="https://oncebuilder.com/once/snippets/<?php echo $_GET['id'];?>/index.php"></iframe>
 										</div>
 									</div>
 								</div>

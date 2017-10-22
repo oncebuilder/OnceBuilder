@@ -22,6 +22,7 @@ header('Access-Control-Allow-Headers: x-requested-with');
 // Some xampp fixing :/
 $_GET['o'] = isset($_GET['o']) ? $_GET['o'] : '';
 $_GET['c'] = isset($_GET['c']) ? $_GET['c'] : '';
+$_GET['s'] = isset($_GET['s']) ? $_GET['s'] : '';
 
 // Is it required??
 if(!preg_match("/^[a-zA-Z0-9_.]+$/i",$_GET['c'])) exit;
@@ -45,6 +46,8 @@ if($_GET['c']!='core') require_once('plugins/'.$_GET['plugin_id'].'/'.$_GET['c']
 // CREATE OBJECT CLASS -------------------
 $once = new once($_CONFIG);
 
-// Require connector ajax and let it works with connector class
-require_once('plugins/'.$_GET['plugin_id'].'/'.$_GET['c'].''.($_GET['s']==''?'':'.'.$_GET['s']).'.php');
+if($once->once_creator_check()){
+	// Require connector ajax and let it works with connector class
+	require_once('plugins/'.$_GET['plugin_id'].'/'.$_GET['c'].''.($_GET['s']==''?'':'.'.$_GET['s']).'.php');
+}
 ?>

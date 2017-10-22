@@ -45,6 +45,8 @@ require_once('class/'.$_GET['c'].'.class.php');
 # CONTENT START -------------------
 $once = new once($_CONFIG);
 
-// Require connector depends on type and let it do work
-require_once('dialogs/'.$_GET['c'].'-'.$_GET['o'].'.dialog.php');
+if($once->once_creator_check()){
+	// Require connector depends on type and let it do work
+	require_once('dialogs/'.$_GET['c'].'-'.$_GET['o'].'.dialog.php');
+}
 ?>

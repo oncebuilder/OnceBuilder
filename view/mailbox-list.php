@@ -83,6 +83,7 @@ if(isset($types['items'])){
 }
 
 # GET DATA -------------------
+if($once->once_creator_check())
 $data=$once->get_mailbox('mailbox');
 ?>
 <div id="mailboxs-data" class="box" data-ajax="true" data-c="<?php echo $_GET['c'];?>" data-o="<?php echo $_GET['o'];?>" data-type_id="<?php echo $_GET['type_id'];?>" data-category_id="<?php echo $once->url_slug($_GET['option']);?>" data-sort_by="<?php echo $_GET['sort_by'];?>" data-ids="<?php echo $_GET['idsxs'];?>" data-page="<?php echo $_GET['page'];?>" data-query="<?php echo $_GET['query'];?>">

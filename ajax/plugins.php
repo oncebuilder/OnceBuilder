@@ -171,21 +171,42 @@ switch($_GET['o']){
 
 	//############################ WEBSITE ##################################################
 	
-	case 'item_user_report':{
+	case 'item_user_buy':{
 		$once->set_data(array(
-			"id" => intval($_GET['id']),
-			"plugin_id" => intval($_POST['plugin_id']),
-			"api" => $once->filter_string($_POST['api'])
+			"plugin_id" => intval($_GET['id'])
 		));
-		$once->item_user_report();
+		$once->item_user_buy();
+	}break;
+	case 'item_user_publish':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_publish();
+	}break;
+	case 'item_user_fork':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_fork();
 	}break;
 	case 'item_user_vote':{
 		$once->set_data(array(
-			"id" => intval($_GET['id']),
-			"plugin_id" => intval($_POST['plugin_id']),
-			"api" => $once->filter_string($_POST['api'])
+			"id" => intval($_GET['id'])
 		));
 		$once->item_user_vote();
+	}break;
+	case 'item_user_download':{
+		$once->set_data(array(
+			"id" => intval($_GET['id'])
+		));
+		$once->item_user_download();
+	}break;
+	case 'item_user_report':{
+		$once->set_data(array(
+			"id" => intval($_GET['id']),
+			"message" => $once->filter_string($_POST['message'])
+		));
+		$once->item_user_report();
 	}break;
 	
 	//############################ OTHER ##################################################

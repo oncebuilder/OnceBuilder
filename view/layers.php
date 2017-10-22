@@ -19,7 +19,7 @@ $once->set_data(array(
 ));
 
 # GET DATA -------------------
-$data=$once->once_select_items('layers','all');
+$data=$once->once_select_items('layers','project_id');
 
 if(isset($data['items'][0]['id'])){
 	$id=intval($data['items'][0]['id']);

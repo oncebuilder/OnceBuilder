@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Czas generowania: 20 Wrz 2017, 06:51
+-- Czas generowania: 22 Paź 2017, 18:39
 -- Wersja serwera: 10.1.10-MariaDB
 -- Wersja PHP: 5.5.30
 
@@ -30,12 +30,12 @@ CREATE TABLE `edit_documentation` (
   `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL DEFAULT '0',
   `plugin_id` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
   `ico` varchar(55) NOT NULL DEFAULT '',
   `parent_id` int(11) NOT NULL DEFAULT '0',
   `level` int(11) NOT NULL DEFAULT '0',
   `position` int(11) NOT NULL DEFAULT '0',
-  `content` text
+  `content` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -69,6 +69,18 @@ CREATE TABLE `edit_frameworks` (
   `source` varchar(255) NOT NULL DEFAULT '',
   `path` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Zrzut danych tabeli `edit_frameworks`
+--
+
+INSERT INTO `edit_frameworks` (`id`, `type_id`, `name`, `source`, `path`) VALUES
+(1, 1, 'CodeIgniter', 'github.com/bcit-ci/CodeIgniter', ''),
+(2, 1, 'Laravel', 'https://github.com/laravel/laravel', ''),
+(3, 2, 'AngularJS', 'github.com/angular/angular.js/', ''),
+(4, 2, 'Vue', 'github.com/vuejs/vue', ''),
+(5, 3, 'Bootstrap', 'https://github.com/twbs/bootstrap', ''),
+(6, 3, 'Foundation', 'http://foundation.zurb.com/sites/download.html/', '');
 
 -- --------------------------------------------------------
 
@@ -106,11 +118,6 @@ CREATE TABLE `edit_langs_categories` (
   `position` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Zrzut danych tabeli `edit_langs_categories`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -122,7 +129,6 @@ CREATE TABLE `edit_langs_types` (
   `name` varchar(55) NOT NULL DEFAULT '',
   `desc` varchar(55) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 
 --
 -- Zrzut danych tabeli `edit_langs_types`
@@ -397,7 +403,7 @@ CREATE TABLE `edit_mailbox_contacts` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL DEFAULT '0',
   `project_id` int(11) NOT NULL DEFAULT '0',
-  `mail` int(11) NOT NULL DEFAULT '0',
+  `email` varchar(32) NOT NULL DEFAULT '',
   `phone` varchar(15) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -606,7 +612,7 @@ INSERT INTO `edit_plugins_categories` (`id`, `project_id`, `name`, `ico`, `paren
 (4, 1, 'Sliders', 'fa fa-caret-square-o-right', 0, 0, 3),
 (5, 1, 'Posts', 'fa fa-comment-o', 0, 0, 5),
 (8, 1, 'Dialogs', 'fa fa-rss-square', 0, 0, 4),
-(9, 1, 'Galeries', 'fa fa-picture-o', 0, 0, 7),
+(9, 1, 'Galleries', 'fa fa-picture-o', 0, 0, 7),
 (11, 1, 'Users', 'fa fa-user', 0, 0, 9),
 (12, 1, 'Faqs', 'fa fa-question', 0, 0, 6),
 (13, 1, 'Documentations', 'fa fa-pencil-square', 0, 0, 10),
@@ -1165,7 +1171,7 @@ CREATE TABLE `edit_snippets_categories` (
 INSERT INTO `edit_snippets_categories` (`id`, `project_id`, `name`, `ico`, `parent_id`, `level`, `position`) VALUES
 (1, 1, 'Contact forms', 'fa fa-list-alt', 0, 0, 0),
 (2, 1, 'Dialog pops', 'fa fa-rss-square', 0, 0, 0),
-(3, 1, 'Galeries', 'fa fa-picture-o', 0, 0, 0),
+(3, 1, 'Galleries', 'fa fa-picture-o', 0, 0, 0),
 (4, 1, 'Landing sections', 'fa fa-puzzle-piece', 0, 0, 0),
 (5, 1, 'List tables', 'fa fa-table', 0, 0, 0),
 (6, 1, 'Login forms', 'fa fa-sign-out', 0, 0, 0),
@@ -1294,19 +1300,13 @@ CREATE TABLE `edit_themes_categories` (
 INSERT INTO `edit_themes_categories` (`id`, `project_id`, `name`, `ico`, `parent_id`, `level`, `position`) VALUES
 (1, 1, 'Restaurants', 'fa fa-coffee', 0, 0, 0),
 (2, 1, 'Internet Technology', 'fa fa-desktop', 0, 0, 0),
-(3, 1, 'Innovations', 'fa fa-lightbulb-o', 0, 0, 0),
 (4, 1, 'Hotels', 'fa fa-hotel', 0, 0, 0),
 (5, 1, 'Building tech', 'fa fa-truck', 0, 0, 0),
-(6, 1, 'Catering', 'fa fa-cutlery', 0, 0, 0),
 (7, 1, 'Blogs', 'fa fa-feed', 0, 0, 0),
-(8, 1, 'Marketing', 'fa fa-retweet', 0, 0, 0),
 (9, 1, 'Landing pages', 'fa fa-spinner', 0, 0, 0),
 (10, 1, 'Portfolios', 'fa fa-newspaper-o', 0, 0, 0),
-(11, 1, 'Documentations', 'fa fa-book', 0, 0, 0),
-(12, 1, 'Marketplaces', 'fa fa-cart-arrow-down', 0, 0, 0),
 (13, 1, 'House furnitures', 'fa fa-home', 0, 0, 0),
 (14, 1, 'Sport', 'fa fa-soccer-ball-o', 0, 0, 0),
-(15, 1, 'Business', 'fa fa-exchange', 0, 0, 0),
 (16, 1, 'Finances', 'fa fa-bank', 0, 0, 0),
 (17, 1, 'Games', 'fa fa-gamepad', 0, 0, 0),
 (18, 1, 'Misc', 'fa fa-flask', 0, 0, 0);
@@ -1377,6 +1377,40 @@ CREATE TABLE `edit_themes_votes` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `theme_id` int(11) NOT NULL DEFAULT '0',
   `mktime` int(11) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `edit_tools`
+--
+
+CREATE TABLE `edit_tools` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `project_id` int(11) NOT NULL DEFAULT '0',
+  `type_id` int(11) NOT NULL DEFAULT '0',
+  `category_id` int(11) NOT NULL DEFAULT '0',
+  `object_id` int(11) NOT NULL DEFAULT '0',
+  `version` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(55) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `tags` varchar(255) NOT NULL DEFAULT '',
+  `author` varchar(255) NOT NULL DEFAULT '',
+  `author_url` varchar(255) NOT NULL DEFAULT '',
+  `licence` varchar(255) NOT NULL DEFAULT '',
+  `visits` int(11) NOT NULL DEFAULT '0',
+  `comments` int(11) NOT NULL DEFAULT '0',
+  `downloads` int(11) NOT NULL DEFAULT '0',
+  `votes` int(11) NOT NULL DEFAULT '0',
+  `reports` int(11) NOT NULL DEFAULT '0',
+  `stared` tinyint(4) NOT NULL DEFAULT '0',
+  `created` int(11) NOT NULL DEFAULT '0',
+  `updated` int(11) NOT NULL DEFAULT '0',
+  `published` int(11) NOT NULL DEFAULT '0',
+  `route` varchar(255) NOT NULL DEFAULT '',
+  `file` varchar(255) NOT NULL DEFAULT '',
+  `source` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1496,7 +1530,7 @@ CREATE TABLE `edit_users` (
   `login` varchar(255) NOT NULL DEFAULT '',
   `username` varchar(16) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
-  `password` varchar(32) NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL DEFAULT '',
   `api_key` varchar(32) NOT NULL DEFAULT '',
   `type_id` int(11) NOT NULL DEFAULT '-1',
   `referer_id` int(11) NOT NULL DEFAULT '0',
@@ -1517,6 +1551,7 @@ CREATE TABLE `edit_users_activations` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL DEFAULT '0',
   `hash` varchar(32) NOT NULL DEFAULT '',
+  `user_ip` varchar(16) NOT NULL DEFAULT '',
   `mktime` int(11) NOT NULL DEFAULT '0',
   `actived` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1539,6 +1574,21 @@ CREATE TABLE `edit_users_aouth` (
   `google` varchar(100) NOT NULL DEFAULT '',
   `behance` varchar(100) NOT NULL DEFAULT '',
   `codepen` varchar(100) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `edit_users_bans`
+--
+
+CREATE TABLE `edit_users_bans` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `type_id` int(11) NOT NULL DEFAULT '0',
+  `hash` varchar(32) NOT NULL DEFAULT '',
+  `user_ip` varchar(16) NOT NULL DEFAULT '',
+  `mktime` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1992,6 +2042,12 @@ ALTER TABLE `edit_themes_votes`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `edit_tools`
+--
+ALTER TABLE `edit_tools`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `edit_tutorials`
 --
 ALTER TABLE `edit_tutorials`
@@ -2043,6 +2099,12 @@ ALTER TABLE `edit_users_activations`
 -- Indexes for table `edit_users_aouth`
 --
 ALTER TABLE `edit_users_aouth`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `edit_users_bans`
+--
+ALTER TABLE `edit_users_bans`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2119,12 +2181,12 @@ ALTER TABLE `edit_users_types`
 -- AUTO_INCREMENT dla tabeli `edit_documentation`
 --
 ALTER TABLE `edit_documentation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT dla tabeli `edit_faq`
 --
 ALTER TABLE `edit_faq`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT dla tabeli `edit_frameworks`
 --
@@ -2149,27 +2211,27 @@ ALTER TABLE `edit_langs_types`
 -- AUTO_INCREMENT dla tabeli `edit_layers`
 --
 ALTER TABLE `edit_layers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT dla tabeli `edit_layers_cols`
 --
 ALTER TABLE `edit_layers_cols`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT dla tabeli `edit_layers_rows`
 --
 ALTER TABLE `edit_layers_rows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 --
 -- AUTO_INCREMENT dla tabeli `edit_mailbox`
 --
 ALTER TABLE `edit_mailbox`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 --
 -- AUTO_INCREMENT dla tabeli `edit_mailbox_contacts`
 --
 ALTER TABLE `edit_mailbox_contacts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT dla tabeli `edit_mailbox_types`
 --
@@ -2179,22 +2241,22 @@ ALTER TABLE `edit_mailbox_types`
 -- AUTO_INCREMENT dla tabeli `edit_menu`
 --
 ALTER TABLE `edit_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT dla tabeli `edit_pages`
 --
 ALTER TABLE `edit_pages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 --
 -- AUTO_INCREMENT dla tabeli `edit_pages_cols`
 --
 ALTER TABLE `edit_pages_cols`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 --
 -- AUTO_INCREMENT dla tabeli `edit_pages_rows`
 --
 ALTER TABLE `edit_pages_rows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT dla tabeli `edit_pages_types`
 --
@@ -2204,7 +2266,7 @@ ALTER TABLE `edit_pages_types`
 -- AUTO_INCREMENT dla tabeli `edit_plugins`
 --
 ALTER TABLE `edit_plugins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
 --
 -- AUTO_INCREMENT dla tabeli `edit_plugins_categories`
 --
@@ -2214,7 +2276,7 @@ ALTER TABLE `edit_plugins_categories`
 -- AUTO_INCREMENT dla tabeli `edit_plugins_downloads`
 --
 ALTER TABLE `edit_plugins_downloads`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT dla tabeli `edit_plugins_reports`
 --
@@ -2224,12 +2286,12 @@ ALTER TABLE `edit_plugins_reports`
 -- AUTO_INCREMENT dla tabeli `edit_plugins_visits`
 --
 ALTER TABLE `edit_plugins_visits`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52173;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52195;
 --
 -- AUTO_INCREMENT dla tabeli `edit_plugins_votes`
 --
 ALTER TABLE `edit_plugins_votes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT dla tabeli `edit_posts`
 --
@@ -2249,7 +2311,7 @@ ALTER TABLE `edit_referers`
 -- AUTO_INCREMENT dla tabeli `edit_routes`
 --
 ALTER TABLE `edit_routes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 --
 -- AUTO_INCREMENT dla tabeli `edit_routes_categories`
 --
@@ -2269,7 +2331,7 @@ ALTER TABLE `edit_settings_types`
 -- AUTO_INCREMENT dla tabeli `edit_snippets`
 --
 ALTER TABLE `edit_snippets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=317;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=531;
 --
 -- AUTO_INCREMENT dla tabeli `edit_snippets_categories`
 --
@@ -2289,17 +2351,17 @@ ALTER TABLE `edit_snippets_reports`
 -- AUTO_INCREMENT dla tabeli `edit_snippets_visits`
 --
 ALTER TABLE `edit_snippets_visits`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52171;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52236;
 --
 -- AUTO_INCREMENT dla tabeli `edit_snippets_votes`
 --
 ALTER TABLE `edit_snippets_votes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT dla tabeli `edit_themes`
 --
 ALTER TABLE `edit_themes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 --
 -- AUTO_INCREMENT dla tabeli `edit_themes_categories`
 --
@@ -2309,12 +2371,12 @@ ALTER TABLE `edit_themes_categories`
 -- AUTO_INCREMENT dla tabeli `edit_themes_downloads`
 --
 ALTER TABLE `edit_themes_downloads`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT dla tabeli `edit_themes_langs`
 --
 ALTER TABLE `edit_themes_langs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT dla tabeli `edit_themes_reports`
 --
@@ -2324,12 +2386,17 @@ ALTER TABLE `edit_themes_reports`
 -- AUTO_INCREMENT dla tabeli `edit_themes_visits`
 --
 ALTER TABLE `edit_themes_visits`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT dla tabeli `edit_themes_votes`
 --
 ALTER TABLE `edit_themes_votes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT dla tabeli `edit_tools`
+--
+ALTER TABLE `edit_tools`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT dla tabeli `edit_tutorials`
 --
@@ -2364,16 +2431,21 @@ ALTER TABLE `edit_tutorials_votes`
 -- AUTO_INCREMENT dla tabeli `edit_users`
 --
 ALTER TABLE `edit_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=324;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=584;
 --
 -- AUTO_INCREMENT dla tabeli `edit_users_activations`
 --
 ALTER TABLE `edit_users_activations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=231;
 --
 -- AUTO_INCREMENT dla tabeli `edit_users_aouth`
 --
 ALTER TABLE `edit_users_aouth`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT dla tabeli `edit_users_bans`
+--
+ALTER TABLE `edit_users_bans`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT dla tabeli `edit_users_counts`
@@ -2399,7 +2471,7 @@ ALTER TABLE `edit_users_follows`
 -- AUTO_INCREMENT dla tabeli `edit_users_informations`
 --
 ALTER TABLE `edit_users_informations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 --
 -- AUTO_INCREMENT dla tabeli `edit_users_logs`
 --
@@ -2414,7 +2486,7 @@ ALTER TABLE `edit_users_messages`
 -- AUTO_INCREMENT dla tabeli `edit_users_reminds`
 --
 ALTER TABLE `edit_users_reminds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT dla tabeli `edit_users_settings`
 --
@@ -2424,7 +2496,7 @@ ALTER TABLE `edit_users_settings`
 -- AUTO_INCREMENT dla tabeli `edit_users_socials`
 --
 ALTER TABLE `edit_users_socials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT dla tabeli `edit_users_types`
 --

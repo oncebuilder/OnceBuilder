@@ -13,35 +13,35 @@ set_time_limit(60);
 
 // This is OnceBuilder core it should be loaded before HTML output
 class core{
-	public $config;
 	public $data;
-	public $once;
-	public $pdo;
-	public $settings;
 	public $error;
 	public $errors;
+	public $item;
+	public $items;
+	public $pdo;
+	public $settings;
+	// VARS BELOW CAN BE DEPRECATED IN FUTURE
 
 	// Initialize varibles and files that cant be oversaved
 	function __construct($_CONFIG){
-		// Start up database driver
-		try {
-			/*
-
-				"Many web applications will benefit from making persistent connections to database servers.
-				Persistent connections are not closed at the end of the script, but are cached and re-used when another script requests a connection using the same credentials.
-				The persistent connection cache allows you to avoid the overhead of establishing a new connection
-				every time a script needs to talk to a database, resulting in a faster web application."
-
-			*/
-			$this->pdo = new PDO('mysql:host='.$_CONFIG['datahost'].';dbname='.$_CONFIG['database'].'', $_CONFIG['datauser'], $_CONFIG['datapass'], array(
-				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-			));
-			//PDO::ATTR_PERSISTENT => true,
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-		} catch (Exception $e) {
-			die("Unable to connect: " . $e->getMessage());
+		if($_CONFIG['datahost'] && $_CONFIG['database']){
+			// Start up database driver
+			try {
+				/*
+					"Many web applications will benefit from making persistent connections to database servers.
+					Persistent connections are not closed at the end of the script, but are cached and re-used when another script requests a connection using the same credentials.
+					The persistent connection cache allows you to avoid the overhead of establishing a new connection
+					every time a script needs to talk to a database, resulting in a faster web application."
+				*/
+				$this->pdo = new PDO('mysql:host='.$_CONFIG['datahost'].';dbname='.$_CONFIG['database'].'', $_CONFIG['datauser'], $_CONFIG['datapass'], array(
+					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+				));
+				//PDO::ATTR_PERSISTENT => true,
+				$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+			} catch (Exception $e) {
+				die("Unable to connect: " . $e->getMessage());
+			}
 		}
-
 		// Global roots data
 		$this->data = $_CONFIG;
 		
@@ -65,18 +65,18 @@ class core{
 		$this->data['user_type_id'] = isset($_SESSION['user_type_id']) ? $_SESSION['user_type_id'] : '';
 		$this->data['user_username'] = $_SESSION['user_username']!=''?$_SESSION['user_username']:'Web developer';
 		$this->data['user_level'] = $this->data['user_type_id']==1?'Creator':'User';
-		$this->data['user_balance'] = isset($_SESSION['user_balance']) ? $_SESSION['user_balance'] : '';
+		$this->data['user_balance'] = isset($_SESSION['user_balance']) ? $_SESSION['user_balance'] : '1337';
 		$this->data['user_lang'] = isset($_SESSION['user_lang']) ? $this->filter_string($_SESSION['user_lang']) : 'en';
 		$this->data['user_ip'] = $this->once_user_ip();
 
 		// Project data for development mode
 		if(!isset($_SESSION['project_id'])){
-			if($this->data['user_id']){
+			if($this->once_demo() || $this->once_creator_check()){
 				// Get selected user
-				$stmt = $this->pdo->prepare("SELECT * FROM edit_themes WHERE user_id=:user_id AND `default`=1");
+				$stmt = $this->pdo->prepare("SELECT * FROM edit_themes WHERE `default`=1");
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->execute();
-
+				
 				// Get count of returned records
 				$user['count']=$stmt->rowCount();
 				if($user['count']){
@@ -86,27 +86,33 @@ class core{
 			}
 		}else{
 			if($_SESSION['project_id']==0){
-				$stmt = $this->pdo->prepare("UPDATE edit_themes SET `default`=1 WHERE user_id=:user_id LIMIT 1");
-				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
-				$stmt->execute();
-
+				if($this->once_creator_check()){
+					$stmt = $this->pdo->prepare("UPDATE edit_themes SET `default`=1 WHERE user_id=:user_id LIMIT 1");
+					$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
+					$stmt->execute();
+				}
+				
 				// Get selected user
-				$stmt = $this->pdo->prepare("SELECT * FROM edit_themes WHERE user_id=:user_id AND `default`=1");
+				$stmt = $this->pdo->prepare("SELECT * FROM edit_themes WHERE `default`=1");
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->execute();
-
+				
 				// Get count of returned records
 				$user['count']=$stmt->rowCount();
 				if($user['count']){
 					$user['item']=$stmt->fetch(PDO::FETCH_ASSOC);
 					$this->data['project_id'] = $_SESSION['project_id'] = $user['item']['id'];
 				}
+			}else{
+				$this->data['project_id'] = intval($_SESSION['project_id']);
 			}
-			$this->data['project_id'] = intval($_SESSION['project_id']);
 		}
 
 		// Builder settings
 		$this->settings['perm_delete'] = true;
+	}
+	function once_demo(){
+		return true;
 	}
 	// Set & get data
 	function set_data($t){
@@ -117,13 +123,35 @@ class core{
 				"project_name" => $this->filter_string($_GET['name'])
 			));
 		*/
-
 		foreach($t as $key => $value){
 			$this->data[$key]=$value;
 		}
 	}
 	function get_data($t){
 		return $this->data[$t];
+	}
+	// Set error
+	function set_error($obj){
+		$this->error++;
+		$this->errors[]=$obj;
+	}
+	// Response
+	function once_response(){
+		$obj=array();
+		if(isset($this->item)) $obj['item']=$this->item;
+		if(isset($this->items)) $obj['items']=$this->items;
+		if(isset($this->error)) $obj['error']=$this->error;
+		if(isset($this->errors)) $obj['errors']=$this->errors;
+		if($this->error==0) $obj['status']='ok';
+		
+		// Return depends on type
+		if($this->data['ajax']){
+			// Print JSON object
+			echo json_encode($obj);
+		}else{
+			// Return Array object
+			return $obj;
+		}
 	}
 	// Get the user IP address
 	function once_user_ip() {
@@ -150,6 +178,7 @@ class core{
 			return 'UNKNOWN';
 		}
 	}
+	
 	############################ RECURSES FUNCTIONS ##################################################
 	// Copy whole dirs and files from dir
 	function recurse_copy($src,$dst){
@@ -202,26 +231,39 @@ class core{
 	}
 	############################ CSRF PROTECTION ##################################################
 	// Creating csrf_token
-	function once_csrf_token(){
+	function once_csrf_token($option=false){
 		// Generate token && return
-		$_SESSION['csrf_token'] = md5($this->data['api_key'].''.$this->data['time']);
-
+		if($option==false){
+			$_SESSION['csrf_token'] = md5($this->data['api_key'].''.$this->data['time']);
+		}
+			
 		return $_SESSION['csrf_token'];
 	}
 	// Checking csrf_token
 	function once_csrf_token_check($token){
 		if($token==$_SESSION['csrf_token']){
 			return true;
-		}else{
+		}else{//its off currently
+			$this->set_error('CSFR token is invalid');
 			return true;
 		}
 	}
 	############################ PERMISSION PROTECTION ##################################################
 	// Checking permissions
-	function once_creator_check(){
-		if($this->data['user_type_id']==1 || $this->data['user_type_id']==2){
+	function once_creator_check($option=false){
+		if($this->data['user_type_id']==1){
 			return true;
 		}else{
+			if(!$option) $this->set_error('No permission');
+			return false;
+		}
+	}
+	// Checking permissions
+	function once_logged_check(){
+		if($this->data['user_logged']){
+			return true;
+		}else{
+			$this->set_error('No permission');
 			return false;
 		}
 	}
@@ -249,23 +291,15 @@ class core{
 		}
 
 		// Get count of returned records
-		$once['count']=$stmt->rowCount();
-		if($once['count']){
-
-			// Return data & status if item created
-			$once['item']=array(
+		if($stmt->rowCount()){
+			// Get created data
+			$this->item=array(
 				"id" => $this->pdo->lastInsertId()
 			);
-
-			// Set status ok
-			$once['status']='ok';
+			return array("item" => $this->item);
 		}else{
-			// Return error if item not created
-			$once['error']='nothing to insert to: '.$table.' ';
+			$this->set_error('Could not insert to: '.$table.'');
 		}
-
-		// Return once
-		return $once;
 	}
 	// Create once item
 	function once_insert_item($table){
@@ -288,30 +322,23 @@ class core{
 		$stmt->bindParam(':category_id', $this->data['category_id'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$once['count'] = $stmt->rowCount();
-
 		// Return data & status if item created
-		if($once['count']){
+		if($stmt->rowCount()){
 			// Get created data
-			$once['item']=array(
+			$this->item=array(
 				"id" => $this->pdo->lastInsertId(),
 				"user_id" => $this->data['user_id'],
 				"project_id" => $this->data['project_id'],
 				"type_id" => $this->data['type_id'],
 				"category_id" => $this->data['category_id']
 			);
-
-			// Set status ok
-			$once['status']='ok';
+			return array("item" => $this->item);
 		}else{
 			// Return error if item not created
-			$once['errors'][]='can not insert item to: '.$table.' ';
-			$once['error']++;
+			$this->set_error('Can not insert item to: '.$table.'');
 		}
-
-		// Return once
-		return $once;
 	}
+	
 	// Get once item
 	function once_select_item($table,$type=''){
 		// Check statements type
@@ -330,14 +357,14 @@ class core{
 		$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		// Get count of returned records
-		$once['count']=$stmt->rowCount();
-		if($once['count']){
-			$once['item']=$stmt->fetch(PDO::FETCH_ASSOC);
+		// Return data & status if item exit
+		if($stmt->rowCount()){
+			$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
+			return array("item" => $this->item);
+		}else{
+			// Return error if item not created
+			$this->set_error('Can find item in: '.$table.'');
 		}
-
-		// Return once
-		return $once;
 	}
 	// Get once item
 	function once_select_item_key($table,$key,$type=''){
@@ -551,33 +578,21 @@ class core{
 		$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$once['count'] = $stmt->rowCount();
-
 		// Check if item exist
-		if($once['count']){
+		if($stmt->rowCount()){
 			// Delete selected item
 			$stmt = $this->pdo->prepare("DELETE FROM edit_".$table." WHERE id=:id LIMIT 1");
 			$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$once['count']=$stmt->rowCount();
-
-			// Return status if item deleted
-			if($once['count']){
-				// Set status ok
-				$once['status']='ok';
+			if($stmt->rowCount()){
+				return true;
 			}else{
-				// Return error if item not deleted
-				$once['errors'][]='can not delete item from: '.$table.' ';
-				$once['error']++;
+				$this->set_error('Can not delete item from: '.$table.'');
 			}
 		}else{
-			// Return error if item not deleted
-			$once['error']='item doesn\'t exist in: '.$table.' ';
+			$this->set_error('Item not exist in: '.$table.'');
 		}
-
-		// Return once
-		return $once;
 	}
 	// Set page limit
 	function once_page_limit($module){
@@ -587,7 +602,6 @@ class core{
 	// Set unique visit
 	function once_set_user_visit($table){
 		$object=substr($table, 0, -1);
-		$this->data['user_ip_md5']=md5($this->data['user_ip']);
 		if($this->data['user_logged']){
 			// Get visit from selected user
 			$stmt = $this->pdo->prepare("SELECT id FROM edit_".$table."_visits WHERE user_id=:user_id AND ".$object."_id=:".$object."_id LIMIT 1");
@@ -598,7 +612,7 @@ class core{
 			// Get visit from selected user ip
 			$stmt = $this->pdo->prepare("SELECT id FROM edit_".$table."_visits WHERE ".$object."_id=:".$object."_id AND user_ip=:user_ip LIMIT 1");
 			$stmt->bindParam(':'.$object.'_id', $this->data['id'], PDO::PARAM_INT);
-			$stmt->bindParam(':user_ip', $this->data['user_ip_md5'], PDO::PARAM_STR, 32);
+			$stmt->bindParam(':user_ip', $this->data['user_ip'], PDO::PARAM_STR, 32);
 		}
 		$stmt->execute();
 
@@ -622,7 +636,7 @@ class core{
 					VALUES (:".$object."_id, :user_ip, :mktime)
 				");
 				$stmt->bindParam(':'.$object.'_id', $this->data['id'], PDO::PARAM_INT);
-				$stmt->bindParam(':user_ip', $this->data['user_ip_md5'], PDO::PARAM_STR, 32);
+				$stmt->bindParam(':user_ip', $this->data['user_ip'], PDO::PARAM_STR, 32);
 				$stmt->bindParam(':mktime', $this->data['time'], PDO::PARAM_INT);
 			}
 
@@ -654,7 +668,6 @@ class core{
 			$stmt = $this->pdo->prepare("UPDATE edit_users_counts SET ".$table."=".$table."+".$count." WHERE user_id=:user_id LIMIT 1");
 			$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 			$stmt->execute();
-			$obj['status']='ok';
 		}else{
 			// Insert user user count information.
 			$stmt = $this->pdo->prepare("
@@ -664,11 +677,20 @@ class core{
 			$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 			$stmt->bindParam(':'.$table.'', $count, PDO::PARAM_INT);
 			$stmt->execute();
-			$obj['status']='ok';
 		}
-
-		// Return once
-		return $once;
+	}
+	function once_get_user_downloads($table){
+		$object=substr($table, 0, -1);
+		//  Check if it has been already downloaded then download else check balance
+		$stmt = $this->pdo->prepare("SELECT id FROM edit_".$table."_downloads WHERE user_id=:user_id AND ".$object."_id=:".$object."_id LIMIT 1");
+		$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
+		$stmt->bindParam(':'.$object.'_id', $this->data['id'], PDO::PARAM_INT);
+		$stmt->execute();
+		if($stmt->rowCount()){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	############################ ONCE TABLE CATEGORIES ##################################################
 	// Get category data
@@ -1176,7 +1198,7 @@ class core{
 		$stmt2->execute();
 		
 		if($stmt2->rowCount()){
-			$obj['item']=$stmt2->fetch(PDO::FETCH_ASSOC);
+			$this->item=$stmt2->fetch(PDO::FETCH_ASSOC);
 
 			$stmt = $this->pdo->prepare("UPDATE edit_routes SET page_id=:page_id WHERE id=:route_id AND project_id=:project_id");
 			$stmt->bindParam(':page_id', $this->data['page_id'], PDO::PARAM_INT);
@@ -1184,16 +1206,15 @@ class core{
 			$stmt->bindParam(':project_id', $this->data['project_id'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$obj['route']=array(
+			$this->item=array(
 				"id" => $this->data['page_id'],// wtf?
-				"name" => $obj['item']['name'],
+				"name" => $this->item['name'],
 				"route_id" => $this->data['route_id']
 			);
 
-			$obj['status']='ok';
+			$this->gen_seo();
 		}else{
-			$obj['errors'][]='Route not exists';
-			$obj['error']++;
+			$this->set_error('Route not exist');
 		}
 
 		// Refresh routes if exist
@@ -1296,6 +1317,11 @@ class core{
 		$tpl['source']=str_replace("{routes}",substr($routes, 0, -1),$tpl['source']);
 		$tpl['source']=str_replace("{langs}",substr($langs, 0, -1),$tpl['source']);
 
+		// If any seo varible or langs or database is set => require_once to template {seo}
+		$seo="";
+		$seo.="require_once('./langs/seo.php');\n";//.'.\$_SESSION['user_lang'].'
+		$tpl['source']=str_replace("{seo}",substr($seo, 0, -1),$tpl['source']);
+		
 		// If any config varible or langs or database is set => require_once to template {config}
 		$config="";
 		$config.="require_once('./once/config.php');\n";
@@ -1879,7 +1905,7 @@ class core{
 	function once_save_source_php(){
 		$source=@file_get_contents('../'.$this->data['path'].'/'.$this->data['file']);
 		if(!$source){
-			$source='';
+			$source='<?php ?>';
 		}
 
 		// Set up search selectors
@@ -1893,7 +1919,7 @@ class core{
 
 		// Append new once block at the end if not exist
 		if(!$layer_end_pos){
-			$source="<?php".substr($source,0,-2)."\n".$layer_start."\n\n".$this->data['source']."\n\n".$layer_end."\n?>";
+			$source="".substr($source,0,-2)."\n".$layer_start."\n\n".$this->data['source']."\n\n".$layer_end."\n?>";
 		}else{
 			$source=$style_start."\n\n".$this->data['source']."\n\n".$style_end;
 		}
@@ -2056,7 +2082,7 @@ class core{
 	// Use google insights to get thumb 320x240
 	function once_insights_image($url,$image){
 		// Use google to get screenshot
-		$response=$this->getPage("https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url=".$url."/&key=".$this->data['google_insight_api_key']."&screenshot=true");
+		$response=$this->get_page("https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url=".$url."/&key=".$this->data['google_insight_api_key']."&screenshot=true");
 		$objx=json_decode($response, true);
 
 		$data=str_replace('_','/',$objx['screenshot']['data']);
@@ -2067,14 +2093,14 @@ class core{
 	}
 	############################ ONCE URL CONTENT HELPERS ##################################################
 	// Getting page with selected Url
-	function getPage($url){
+	function get_page($url){
         $headers[] = 'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0';
         $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
         $headers[] = 'Accept-Language: pl,en-us;q=0.7,en;q=0.3';
         $headers[] = 'Connection: keep-alive';
         $headers[] = 'DNT: 1';
 
-       	$response=$this->getPageResponse(array(
+       	$response=$this->get_page_response(array(
 			"url" => $url,
 			"headers" => $headers,
 			"cookie" => '',
@@ -2085,7 +2111,7 @@ class core{
 		return $response;
     }
 	// cUrl instance to get page response
-	function getPageResponse($config){
+	function get_page_response($config){
 		$parts=parse_url($config['url']);
 		if(!$parts) {
 			return '/* the URL was seriously wrong */';
@@ -2164,6 +2190,27 @@ class core{
 		curl_close($ch);
 		return $output;
 	}
+	function download($url) {
+		set_time_limit(0);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$r = curl_exec($ch);
+		curl_close($ch);
+		header('Expires: 0'); // no cache
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
+		header('Cache-Control: private', false);
+		header('Content-Type: application/force-download');
+		header('Content-Disposition: attachment; filename="' . basename($url) . '"');
+		header('Content-Transfer-Encoding: binary');
+		header('Content-Length: ' . strlen($r)); // provide file size
+		header('Connection: close');
+		echo $r;
+	}
 	# SOME FUNCTIONS -------------------
 	function filter_string($pole,$un=false){
 		$pole=trim($pole); // uwam zbędne spacje
@@ -2185,8 +2232,8 @@ class core{
 		}
 		return $pole;
 	}
-	function filter_html($pole,$un=false){
-		$pole=trim($pole); // uwam zbedne spacje
+	function filter_html($pole){ return $pole;
+		/*$pole=trim($pole); // uwam zbedne spacje
 		if (get_magic_quotes_gpc())
 		//$nazwa = htmlspecialchars($nazwa, ENT_QUOTES);
 		$pole = stripslashes($pole); // usuwam ukosniki'
@@ -2204,6 +2251,7 @@ class core{
 			);
 		}
 		return $pole;
+		*/
 	}
 	/**
 	 * Create a web friendly URL slug from a string.
@@ -2324,5 +2372,7 @@ class core{
 		
 		return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
 	}
+	
+	
 }
 ?>

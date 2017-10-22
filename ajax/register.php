@@ -22,7 +22,7 @@ switch($_GET['o']){
 			"login" => $once->filter_string($_POST['login']),
 			"username" => $once->filter_string($_POST['username']),
 			"password" => $once->filter_string($_POST['password']),
-			"referer_id" => intval($_POST['referer_id'])
+			"referer_id" => intval($_COOKIE['referer_id'])
 		));
 		$once->item_register();
 	}break;

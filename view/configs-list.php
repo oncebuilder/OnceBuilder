@@ -89,7 +89,7 @@ $variables=$once->variables_get('configs');
 											<tr id="item_'.$key.'" data-key="'.$key.'">
 												<td class="small-col"><input type="checkbox" name="ids['.$key.']"/></td>
 												<td class="item-name">$_CONFIG['.$key.']</td>
-												<td><input class="item-update" type="text" value="'.$val.'"></td>
+												<td><input class="item-update" type="text" value="'.($once->once_creator_check()==true?$val:'This cant be displayed').'"></td>
 												<td class="small-col">
 													<a class="item-delete" title="route delete" style="cursor: pointer;"><i class="fa fa-trash-o"></i></a>
 												</td>

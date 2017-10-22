@@ -15,7 +15,7 @@ class once extends core{
 		
 		$MailChimp = new MailChimp($this->data['mailchimp_apikey']);
 			
-		$obj['result'] = $MailChimp->call('lists/subscribe', array(
+		$this->item['result'] = $MailChimp->call('lists/subscribe', array(
 			'id'                => $this->data['mailchimp_listid'],
 			'email'             => array('email'=>$this->data['email']),
 			'merge_vars'        => array(),
@@ -25,10 +25,7 @@ class once extends core{
 			'send_welcome'      => true,
 		));
 		
-		$obj['status']='ok';
-		
-		// Print JSON object
-		echo json_encode($obj);
+		return $this->once_response();
 	}
 }
 ?>

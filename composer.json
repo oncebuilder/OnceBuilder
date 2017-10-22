@@ -1,7 +1,7 @@
 {
-  "name": "oncebuilder/oncebuilder",
+  "name": "OnceBuilder/OnceBuilder",
   "description": "OnceBuilder - admin control panel and dashboard that's based on AdminLTE",
-  "homepage": "https://oncebuilder.com/",
+  "homepage": "http:/oncebuilder.com/",
   "keywords": [
     "css",
     "js",
@@ -19,6 +19,6 @@
   ],
   "license": "MIT",
   "support": {
-    "issues": "https://github.com/oncebuilder/oncebuilder/issues"
+    "issues": "https://github.com/oncebuilder/OnceBuilder/issues"
   }
 }

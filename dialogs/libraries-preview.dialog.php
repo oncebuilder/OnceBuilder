@@ -35,7 +35,7 @@ $data=$once->item_preview();a($data);
 						echo '<button class="btn btn-success btn-sm pull-right item-download" type="button"><i class="fa fa-plus"></i> Download</button>';
 					}
 					?>
-					<a href="http://oncebuilder.com/librarie/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
+					<a href="https://oncebuilder.com/librarie/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
 					</h4>
 				</div>
 				<div class="modal-body">
@@ -79,7 +79,7 @@ $data=$once->item_preview();a($data);
 											<div class="librarie-item">
 												<div class="row librarie-content">
 													<div class="col-md-2">
-														<img src="http://oncebuilder.com/once/libraries/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='img/librarie.png'">
+														<img src="https://oncebuilder.com/once/libraries/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='img/librarie.png'">
 													</div>
 													<div class="col-md-10">
 														<h3><?php echo $data['item']['name'];?> <span><!--Updated: <?php echo $data['item']['created'];?> --><span style="display: inline; cursor: pointer;">by <a href="<?php echo $data['item']['author_url'];?>" target="_blank"><?php echo $data['item']['author'];?></a></span></span></h3>

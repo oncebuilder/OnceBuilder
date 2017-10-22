@@ -30,14 +30,13 @@ echo '
 		
 		<!-- Latest compiled and minified modernizr -->
 		<link rel="stylesheet" href="snippet.css?'.time().'">
-		
-		<!-- Latest compiled and minified modernizr -->
-		<script src="snippet.js?'.time().'"></script>
 	</head>
 	<body>';
 		# PAGE GRIDS -------------------
 		echo file_get_contents('snippet.html');
 		echo '
+		<!-- Latest compiled and minified modernizr -->
+		<script src="snippet.js?'.time().'"></script>
 	</body>
 </html>';
 ob_end_flush(); 

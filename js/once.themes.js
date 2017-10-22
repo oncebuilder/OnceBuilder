@@ -10,6 +10,7 @@
 
 once.themes = {
 	loaded: false,
+	keypress: false,		 
 	initialized: function(){
 		this.loaded=true;
 	},
@@ -76,6 +77,41 @@ once.themes = {
 			.error(function() { console.log("Request Error: item_delete"); });
 		}
 	},
+	itemDownload: function(obj){//ok
+		// Get item id
+		var id=$(obj).parent().parent().data("id");
+		$.ajax({
+			type: 'POST',
+			url: once.path+"/ajax.php?c=themes&o=item_download&id="+id,
+			beforeSend: function(data) {
+				var button=$("#item_"+id+" .item-download");
+				button.css("cursor","pointer");
+				button.attr("disabled",true);
+			},
+			success: function(data) {
+				// Refresh items list if response ok
+				if(data.status=='ok'){
+
+					var button=$("#item_"+id+" .item-download");
+
+					button.toggleClass("btn-success");
+					button.toggleClass("btn-default");
+					button.attr("disabled",true);
+					button.css("cursor","pointer");
+					button.html("Downloaded");
+
+					//item improt from file
+					console.log(data);
+				}else{
+					console.log("Action Error: "+data.error);
+				}
+			},
+			contentType: "application/json",
+			dataType: 'json'
+		})
+		.error(function() { console.log("Request Error: item_download"); });
+	},
+	
 	itemEditApprove: function(obj){//ok
 		// Get varibles defined in rendering data-*
 		var id=$("#theme-data").data('id');
@@ -320,6 +356,120 @@ once.themes = {
 			.error(function() { console.log("Request Error: item_use"); });
 		}
 	},
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Website functions
+	itemUserBuy: function(obj){//ok
+		// Get item id
+		var id=$("#theme-data").data('id');
+		var r = confirm("Do you want to buy this theme?");
+		if(r){
+			$.ajax({
+				type: 'POST',
+				url: once.path+"/ajax.php?c=themes&o=item_user_buy&id="+id,
+				beforeSend: function(data) {
+					var button=$("#item_"+id+" .item-download");
+					button.css("cursor","pointer");
+					button.attr("disabled",true);
+				},
+				success: function(data) {
+					// Refresh items list if response ok
+					if(data.status=='ok'){
+									
+						var button=$("#item_"+id+" .item-download");
+
+						button.toggleClass("btn-success");
+						button.toggleClass("btn-default");
+						button.attr("disabled",true);
+						button.css("cursor","pointer");
+						button.html("Downloaded");
+
+						//item improt from file
+						console.log(data);
+					}else{
+						alert(data.errors[0])
+						console.log("Action Error: "+data.error);
+					}
+				},
+				contentType: "application/json",
+				dataType: 'json'
+			})
+			.error(function() { console.log("Request Error: item_download"); });
+		}
+	},		
+	itemUserPublish: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#theme-data").data('id');
+		var r = confirm("Publish "+name+"?");
+		if(r){
+			// Call to del_layer with parm id
+			$.ajax({
+				type: 'POST',
+				url: once.path+"/ajax.php?c=themes&o=item_user_publish&id="+id,
+				success: function(data) { 
+					// Refresh items list if response ok
+					if(data.status=='ok'){
+						document.location.href="/theme/"+id;
+						console.log(data);
+					}else{
+						console.log("Action Error: "+data.error);
+					}
+				},
+				contentType: "application/json",
+				dataType: 'json'
+			})
+			.error(function() { console.log("Request Error: item_user_publish"); });
+		}
+	},
+	itemUserFork: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#theme-data").data('id');
+		// Send ajax request to api
+		$.getJSON(once.path+"/ajax.php?c=themes&o=item_user_fork&id="+id, function(data) {
+			// Refresh items list if response ok
+			if(data.status=='ok'){
+				document.location.href='/theme/'+data.item.id;
+				console.log(data);
+			}else{
+				console.log("Action Error: "+data.error);
+			}
+		})
+		.error(function() { console.log("Request Error: item_star"); });
+	},
+	itemUserVote: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#theme-data").data('id');
+		// Send ajax request to api
+		$.getJSON(once.path+"/ajax.php?c=themes&o=item_user_vote&id="+id, function(data) {
+			// Refresh items list if response ok
+			if(data.status=='ok'){
+				alert('Thanks. voted!');
+				console.log(data);
+			}else{
+				if(data.errors[0]=='user not logged'){
+					document.location.href="/login";
+				}else{
+					alert(data.errors[0]);
+				}
+				console.log("Action Error: "+data.error);
+			}
+		})
+		.error(function() { console.log("Request Error: item_stared"); });
+	},
+	itemUserDownload: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#theme-data").data('id');
+		// Open ajax request to api
+		document.location.href=once.path+"/themes/"+id+"/theme.zip";
+	},						 
+			
 }
 
 once.themes.actions = {
@@ -453,6 +603,28 @@ once.themes.actions = {
 			once.themes.itemEditImageDelete($(this));
 		});
 		
+		// Website functions
+		$("#theme-data .item-user-fork").click(function () {
+			once.themes.itemUserFork($(this));
+												
+		});
+		
+						
+		$("#theme-data .item-user-vote").click(function () {
+			once.themes.itemUserVote($(this));
+		});
+		
+		$("#theme-data .item-user-download").click(function () {
+			once.themes.itemUserDownload($(this));
+		});
+		
+		$("#theme-data .item-user-buy").click(function () {
+			once.themes.itemUserBuy($(this));
+		});
+	
+	
+		// Initialize itemEdit dialog
+		once.themes.dialogs.itemUserReport(".item-user-report");
 		// Initialize editForm
 		once.themes.forms.editForm($(this));
 
@@ -583,6 +755,22 @@ once.themes.dialogs = {
 			.error(function() { console.log("Dialog Error: publish"); });
 		});
 	},
+	itemUserReport: function(obj){
+		// Append at end of the body
+		$("body").append("<div id=\"item-user-report\"></div>");
+
+		// Read and open report dialog
+		$(obj).click(function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$("#item-user-report").load(once.path+"/dialog.php?c=themes&o=report&id="+$("#snippet-data").data("id"), function() {
+				$('#item-user-report .modal:first').modal({
+					show: 'false'
+				}); 
+			})
+			.error(function() { console.log("Dialog Error: report"); });
+		});
+	},
 }
 
 once.themes.forms = {
@@ -591,14 +779,21 @@ once.themes.forms = {
 		var options = {
 			dataType:  "json",
 			success: function(data){
-				// Update name on items list
+				// Update name & author on items list
 				if(data.status=='ok'){
+					// Check for redirects then save
+					if($("#theme-data").data('redirect')!==undefined){
+						document.location.href=$("#theme-data").data('redirect');
+					}
+					
 					if($("#theme-data").data('redirect')==undefined){
 						// Get new data
 						var name=$("#editForm input[name='name']");
+						var author=$("#editForm input[name='author']");
 						
 						// Update DOM
-						$("#item_"+data.item.id+" .theme-name").html(name.val());
+						$("tr[data-id='"+data.item.id+"'] td[data-link='name']").html(name.val());
+						$("tr[data-id='"+data.item.id+"'] td[data-link='author']").html(author.val());
 					}
 					
 					console.log("Theme updated!");
@@ -771,6 +966,14 @@ $(document).ready(function () {
 		once.themes.itemNew($(this));
     });
 
+	$(".item-user-publish").click(function () {
+		once.themes.itemUserPublish($(this));
+    });
+	
+	$(".item-presave").click(function () {
+		once.themes.itemEditSave($(this));
+    });
+	
 	// Initialize itemImport dialog
 	once.themes.dialogs.itemImport(".item-import");
 		

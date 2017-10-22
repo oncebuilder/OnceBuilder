@@ -77,7 +77,7 @@ $once->set_data(array(
 //$categories=$once->once_select_items('routes_types');
 
 # GET DATA -------------------
-$data=$once->once_select_items_page('routes','all');
+$data=$once->once_select_items_page('routes','project_id');
 
 # GET DATA -------------------
 $project_langs=$once->once_lang_list();
@@ -141,7 +141,7 @@ if($routes['items']){
 										<th>Route to page</th>
 										<?php
 											foreach($project_langs['items'] as $key => $val){
-												echo '<th>'.$project_langs['items'][$key]['desc'].'</th>';
+												echo '<th>Page URL '.$project_langs['items'][$key]['desc'].'</th>';
 											}
 										?>
 										<th></th>

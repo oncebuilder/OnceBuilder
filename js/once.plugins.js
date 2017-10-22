@@ -409,7 +409,178 @@ once.plugins = {
 			dataType: 'json'
 		})
 		.error(function() { console.log("Request Error: item_star"); });
+   
+
+					 
+								
+											 
+									   
+									   
+		
+									
+		   
+				 
+																	 
+							  
+										 
+						   
+											
+						
+		   
+											   
+	  
+	  
+									
+					
+	 
+																		   
+   
+   
+							 
+											 
+									   
+							 
+																					  
+									   
+						 
+													
+					  
+		 
+											 
+	
+	
+																  
 	},
+	
+	// Website functions
+		itemUserBuy: function(obj){//ok
+		// Get item id
+		var id=$("#plugin-data").data('id');
+		var r = confirm("Do you want to buy this plugin?");
+		if(r){
+			$.ajax({
+				type: 'POST',
+				url: once.path+"/ajax.php?c=plugins&o=item_user_buy&id="+id,
+				beforeSend: function(data) {
+					var button=$("#item_"+id+" .item-download");
+					button.css("cursor","pointer");
+					button.attr("disabled",true);
+				},
+				success: function(data) {
+					// Refresh items list if response ok
+					if(data.status=='ok'){
+									
+						var button=$("#item_"+id+" .item-download");
+
+						button.toggleClass("btn-success");
+						button.toggleClass("btn-default");
+						button.attr("disabled",true);
+						button.css("cursor","pointer");
+						button.html("Downloaded");
+
+						//item improt from file
+						console.log(data);
+					}else{
+						alert(data.errors[0])
+						console.log("Action Error: "+data.error);
+					}
+				},
+				contentType: "application/json",
+				dataType: 'json'
+			})
+			.error(function() { console.log("Request Error: item_download"); });
+		}
+	},		
+	itemUserPublish: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#plugin-data").data('id');
+		var r = confirm("Publish "+name+"?");
+		if(r){
+			// Call to del_layer with parm id
+			$.ajax({
+				type: 'POST',
+				url: once.path+"/ajax.php?c=plugins&o=item_user_publish&id="+id,
+				success: function(data) { 
+					// Refresh items list if response ok
+					if(data.status=='ok'){
+						document.location.href="/plugin/"+id;
+						console.log(data);
+					}else{
+						console.log("Action Error: "+data.error);
+					}
+				},
+				contentType: "application/json",
+				dataType: 'json'
+			})
+			.error(function() { console.log("Request Error: item_user_publish"); });
+		}
+	},
+	itemUserFork: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#plugin-data").data('id');
+		// Send ajax request to api
+		$.getJSON(once.path+"/ajax.php?c=plugins&o=item_user_fork&id="+id, function(data) {
+			// Refresh items list if response ok
+			if(data.status=='ok'){
+				document.location.href='/plugin/'+data.item.id;
+				console.log(data);
+			}else{
+				console.log("Action Error: "+data.error);
+			}
+		})
+		.error(function() { console.log("Request Error: item_star"); });
+	},
+	itemUserVote: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#plugin-data").data('id');
+		// Send ajax request to api
+		$.getJSON(once.path+"/ajax.php?c=plugins&o=item_user_vote&id="+id, function(data) {
+			// Refresh items list if response ok
+			if(data.status=='ok'){
+				alert('Thanks. voted!');
+				console.log(data);
+			}else{
+				if(data.errors[0]=='user not logged'){
+					document.location.href="/login";
+				}else{
+					alert(data.errors[0]);
+				}
+				console.log("Action Error: "+data.error);
+			}
+		})
+		.error(function() { console.log("Request Error: item_stared"); });
+	},
+	itemUserDownload: function(obj){
+		// Get varibles defined in rendering data-*
+		var id=$("#plugin-data").data('id');
+		// Open ajax request to api
+		document.location.href=once.path+"/plugins/"+id+"/plugin.zip";
+	},						 
+											 
+									   
+							 
+																					  
+									   
+						 
+							
+					  
+		 
+										  
+									 
+		  
+						   
+	 
+											 
+	
+	
+																	
+   
+								 
+											 
+									   
+							 
+																					  
+   
 }
 
 once.plugins.actions = {
@@ -592,21 +763,27 @@ once.plugins.actions = {
 				// Load file
 				if(once.cms){
 					// Load file
-					$.getJSON(once.path+"/ajax.php?c=plugins&o=load_source&id="+$('#plugin-data').data("id")+"&file="+tab.attr('data-file'), function(data) {
-						if(data.status=='ok'){
-							// Fill editor
-							once.editors[1].setValue(data.source);
-							
-							// Set editor mode
-							once.editors[1].setOption('mode', mode);
-						}else{
-							console.log("Action Error: "+data.error);
-						}
+					$.ajax({
+						type: 'POST',
+						url: once.path+"/ajax.php?c=plugins&o=load_source&id="+$('#plugin-data').data("id")+"&file="+tab.attr('data-file'),
+						success: function(data) { 
+							if(data.status=='ok'){
+								// Fill editor
+								once.editors[1].setValue(data.item.source);
+											
+								// Set editor mode
+								once.editors[1].setOption('mode', mode);
+							}else{
+								console.log("Action Error: "+data.error);
+							}
+						},
+						contentType: "application/json",
+						dataType: 'json'
 					})
 					.error(function() { console.log("Request Error: load_source"); });
 				}else{
 					// Get source from page
-					var source=$("#source_"+tab.attr('data-editor')).html();
+					var source=$("#"+tab.attr('data-path')).html();
 					source=source.replaceAll("&amp;","&");
 					source=source.replaceAll("&quot;","\"");
 					source=source.replaceAll("&lt;","<");
@@ -708,6 +885,25 @@ once.plugins.actions = {
 		// Galery image delete
 		$("#plugin-data .item-image-delete").click(function () {
 			once.plugins.itemEditImageDelete($(this));
+		});
+		
+		// Website functions
+		$("#plugin-data .item-user-fork").click(function () {
+			once.plugins.itemUserFork($(this));
+												
+		});
+		
+						
+		$("#plugin-data .item-user-vote").click(function () {
+			once.plugins.itemUserVote($(this));
+		});
+		
+		$("#plugin-data .item-user-download").click(function () {
+			once.plugins.itemUserDownload($(this));
+		});
+
+		$("#plugin-data .item-user-buy").click(function () {
+			once.plugins.itemUserBuy($(this));
 		});
 		
 		// Initialize editForm
@@ -982,17 +1178,22 @@ once.plugins.forms = {
 			success: function(data){
 				// Update name & version on items list
 				if(data.status=='ok'){
+					// Check for redirects then save
+					if($("#plugin-data").data('redirect')!==undefined){
+						document.location.href=$("#plugin-data").data('redirect');
+					}
+					
 					if($("#plugin-data").data('redirect')==undefined){
 						// Get new data
 						var name=$("#editForm input[name='name']");
-						var version=$("#editForm input[name='version']");
-
+						var author=$("#editForm input[name='author']");
+						
 						// Update DOM
 						$("tr[data-id='"+data.item.id+"'] td[data-link='name']").html(name.val());
-						$("tr[data-id='"+data.item.id+"'] td[data-link='version']").html(version.val());
+						$("tr[data-id='"+data.item.id+"'] td[data-link='author']").html(author.val());
 					}
 					
-					console.log("Plugin updated!");
+					console.log("Snippet updated!");
 				}else{
 					console.log("Action Error: "+data.error);
 				}
@@ -1160,7 +1361,15 @@ $(document).ready(function () {
 	$(".item-new").click(function () {
 		once.plugins.itemNew($(this));
     });
-
+	
+	$(".item-user-publish").click(function () {
+		once.plugins.itemUserPublish($(this));
+    });
+	
+	$(".item-presave").click(function () {
+		once.plugins.itemEditSave($(this));
+    });
+	
 	// Initialize import dialog
 	once.plugins.dialogs.itemImport(".item-import");
 	

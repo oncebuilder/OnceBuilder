@@ -108,7 +108,7 @@ echo '
 														<div class="row">
 															<div class="col-md-4">
 																<div class="form-group">
-																	<label for="fw_js">Framework PHP</label>
+																	<label for="fw_php">Framework PHP</label>
 																	<select class="form-control" name="fw_js">
 																		<option value="0" <?php echo ($data['item']['fw_php']==0?'selected':'');?>></option>
 																	</select>

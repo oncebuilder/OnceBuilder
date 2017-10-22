@@ -9,10 +9,8 @@
 */
 $(document).ready(function () {
 	// Load code mirror library & modes
-	once.loadJSfile('/once/libs/jquery-form/jquery.form.js');
-	//once.loadJSfile('//oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js');
-	once.loadJSfile('/once/libs/jquery-validation/dist/jquery.validate.js');
-	//once.loadJSfile('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js');
+	once.loadJSfile(once.path+'/libs/jquery-form/jquery.form.js');
+	once.loadJSfile(once.path+'/libs/jquery-validation/dist/jquery.validate.js');
 	
 	if($("#loginPlugin").length>0){
 		// First validate
@@ -34,7 +32,6 @@ $(document).ready(function () {
 				}
 			}
 		});
-
 		// Toggle password
 		$("#password-toggle").click(function(){
 			var input=$("#loginPlugin input[name=\"password\"]");
@@ -63,9 +60,9 @@ $(document).ready(function () {
 		});
 
 		// Initialize loginForm / remindForm / changeForm
-		//once.login.forms.loginForm($(this));
-		//once.login.forms.remindForm($(this));
-		//once.login.forms.changeForm($(this));
+		once.login.forms.loginForm($(this));
+		once.login.forms.remindForm($(this));
+		once.login.forms.changeForm($(this));
 	}
 });
 
@@ -84,7 +81,7 @@ once.login.forms = {
 			success: function(data){
 				// If response ok refresh logo
 				if(data.status=='ok'){
-					//document.location.href=$("#loginPlugin").data("redirect");
+					document.location.href=$("#loginPlugin").data("redirect");
 					
 					console.log("user logged!");
 				}else{

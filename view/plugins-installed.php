@@ -175,9 +175,9 @@ $data=$once->once_select_items_page('plugins');
 												<td data-link="name" class="item-name">'.$data['items'][$key]['name'].'</td>
 												<td data-link="version">'.$data['items'][$key]['version'].'</td>
 												<td>
-													<a class="item-edit" title="plugin edit" style="cursor: pointer;"><i class="fa fa fa-edit"></i></a>
+													<a class="item-edit" title="plugin '.$data['items'][$key]['id'].' edit" style="cursor: pointer;"><i class="fa fa fa-edit"></i></a>
 														&nbsp;&nbsp;
-													<a class="item-delete" title="plugin delete" style="cursor: pointer;"><i class="fa fa-trash-o"></i></a>
+													<a class="item-delete" title="plugin '.$data['items'][$key]['id'].' delete" style="cursor: pointer;"><i class="fa fa-trash-o"></i></a>
 												</td>
 											</tr>';
 										}

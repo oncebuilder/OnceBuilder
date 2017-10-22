@@ -14,7 +14,7 @@ $_GET['route'] = isset($_GET['route']) ? $_GET['route'] : 'about';
 $_GET['v'] = isset($_GET['v']) ? $_GET['v'] : '';
 
 # LOGIN -----------------
-if(!$_SESSION['user_logged'] || $_SESSION['user_type_id']!=1){
+if(!$_SESSION['user_logged']){// || $_SESSION['user_type_id']!=1
 	session_unset();
 	session_destroy();
 	header("Location: login.php"); /* Redirect browser */
@@ -50,7 +50,7 @@ $core = new core($_CONFIG);
 		 
 		<meta charset="UTF-8">
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-		<meta content="<?php echo $core->once_csrf_token();?>" name="csrf_token">
+		<meta content="<?php echo $core->once_csrf_token(true);?>" name="csrf_token">
 
 		<!-- Boostrap style -->
 		<link href="libs/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -166,6 +166,13 @@ $core = new core($_CONFIG);
                 </a>
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
+						<!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown messages-menu">
+                            <a href="/">
+                                <i class="fa fa-mail-forward"></i>
+                                <span class="label label-success"></span>
+                            </a>
+                        </li>
 						<!-- Messages: style can be found in dropdown.less-->
                         <li class="dropdown messages-menu">
                             <a href="index.php?route=mailbox">
@@ -352,7 +359,17 @@ $core = new core($_CONFIG);
 		<!-- Once App -->
         <script src="js/once.js?<?php echo time();?>" type="text/javascript"></script>
 		
-		<!-- Once Settings -->
+		<!-- Once Configuration -->
+        <script type="text/javascript">
+			once.api = true;
+			once.api_key = '<?php echo $_CONFIG['api_key'];?>';
+			once.cms = true;
+			once.admin = true;
+			once.creator = true;
+			once.path = '/once';
+		</script>
+
+		<!-- Once Script -->
         <script src="js/script.js" type="text/javascript"></script>
     </body>
 </html>

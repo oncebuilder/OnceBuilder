@@ -179,7 +179,7 @@ $data=$response['data'];
 					<div class="snippet-item">
 						<div class="row snippet-thumbnail">
 							<div class="col-md-12">
-								<img src="http://oncebuilder.com/once/snippets/'.$data['items'][$key]['id'].'/thumbnail.png?'.time().'" onerror="this.src=\'/once/img/snippet.png\'">
+								<img src="https://oncebuilder.com/once/snippets/'.$data['items'][$key]['id'].'/thumbnail.png" onerror="this.src=\'/once/img/snippet.png\'">
 							</div>
 						</div>
 						<div class="row snippet-name">
@@ -200,7 +200,7 @@ $data=$response['data'];
 			if(isset($response['error'])){
 				echo '
 				<div class="col-md-12">
-					You are not subscribed. More info at <a target="_blank" href="http://oncebuilder.com">oncebuilder.com</a>
+					You are not subscribed. More info at <a target="_blank" href="https://oncebuilder.com">oncebuilder.com</a>
 				</div>';
 			}else{
 				echo '

@@ -38,19 +38,17 @@ class once extends core{
 
 		if(isset($_SERVER['HTTP_REFERER'])) $this->data['referer_website']=$_SERVER['HTTP_REFERER'];
 		else $this->data['referer_website']='';
-		
-		
-		
+
 		// Prepare statements to get user information.
 		$stmt = $this->pdo->prepare("SELECT id, username FROM edit_users WHERE id=:user_id LIMIT 1");
 		$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_STR, 50);
 		$stmt->execute();
 
 		if($stmt->rowCount()){
-			$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 			
 			// Prepare statements to get user information.
-			$stmt2 = $this->pdo->prepare("SELECT * FROM edit_referers WHERE user_ip=:user_ip LIMIT 1");
+			$stmt2 = $this->pdo->prepare("SELECT id FROM edit_referers WHERE user_ip=:user_ip LIMIT 1");
 			$stmt2->bindParam(':user_ip', $this->data['user_ip'], PDO::PARAM_STR, 50);
 			$stmt2->execute();
 
@@ -68,21 +66,9 @@ class once extends core{
 				$stmt = $this->pdo->prepare("UPDATE edit_users SET balance=balance+1 WHERE id=:user_id");
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->execute();
-				
-				
-				$obj['status']='ok';
 			}
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
-		
+		return $this->once_response();
 	}
 }
 ?>

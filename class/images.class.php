@@ -10,7 +10,7 @@
 */
 	
 class once extends core{
-	function get_dir_listing(){//ok
+	function get_dir_listing(){
 		// Get path
 		$obj['path'] = $this->data['path'];
 
@@ -52,7 +52,7 @@ class once extends core{
 		
 		return $obj;
 	}
-	function get_file_info(){//ok
+	function get_file_info(){
 		// Source path
 		$source=$this->data['root_path'].'/images'.$this->data['path'];
 
@@ -68,206 +68,108 @@ class once extends core{
 		return $obj;
 	}
 
-	function item_delete(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin or just user
-			if($this->once_creator_check()){
-				if($this->data['path']!=''){
-					$this->data['path']=$this->data['root_path'].'/images'.$this->data['path'];
-					
-					if (filetype($this->data['path']) == "dir"){
-						$this->recurse_delete($this->data['path']);
-					}else{
-						@chmod($this->data['path'], 0777);
-						unlink($this->data['path']);
-					}
-					
-					$obj['status']='ok';
-				}else{
-					$obj['errors'][]='Wrong path!';
-					$obj['error']++;
-				}
-			}else{
-				$obj['errors'][]='You don\'t have permission!';
-				$obj['error']++;
-			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
-		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
-	}
-	function item_edit(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin or just user
-			if($this->once_creator_check()){
-				
-				$path_in_array=explode("/",$this->data['path']);
-				array_pop($path_in_array);
-				$path_to_file=implode("/",$path_in_array);
-				
-				$this->data['path_new']=$this->data['root_path'].'/images'.$path_to_file.'/'.$this->data['name'];
-				$this->data['path_old']=$this->data['root_path'].'/images'.$this->data['path'];
-
-				if(!file_exists($this->data['path_new'])) {
-					rename($this->data['path_old'],$this->data['path_new']);
-					$obj['item']['path']=$path_to_file.'/'.$this->data['name'];
-					$obj['item']['old']=$this->data['path'];
-					
-					$obj['status']='ok';
-				}else{
-					$obj['errors'][]='Already exist!';
-					$obj['error']++;
-				}
-			}else{
-				$obj['errors'][]='You don\'t have permission!';
-				$obj['error']++;
-			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
-		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
-	}
-	function item_new(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin or just user
-			if($this->once_creator_check()){
-				// Check if dir exist if yes do it until +1
+	function item_delete(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			if($this->data['path']!=''){
 				$this->data['path']=$this->data['root_path'].'/images'.$this->data['path'];
-
-				while(file_exists($this->data['path'].'/NewDir'.$i)){
-					$i++;
+				if(filetype($this->data['path']) == "dir"){
+					$this->recurse_delete($this->data['path']);
+				}else{
+					@chmod($this->data['path'], 0777);
+					unlink($this->data['path']);
 				}
-
-				$this->data['path']=$this->data['path'].'/NewDir'.$i;
-				
-				@mkdir($this->data['path']);
-				@chmod($this->data['path'], 0777);
-				
-				$obj['item']['name']='NewDir'.$i;
-				$obj['status']='ok';
 			}else{
-				$obj['errors'][]='You don\'t have permission!';
-				$obj['error']++;
+				$this->set_error('Wrong path!');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
+		return $this->once_response();
+	}
+	function item_edit(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			$path_in_array=explode("/",$this->data['path']);
+			array_pop($path_in_array);
+			$path_to_file=implode("/",$path_in_array);
+				
+			$this->data['path_new']=$this->data['root_path'].'/images'.$path_to_file.'/'.$this->data['name'];
+			$this->data['path_old']=$this->data['root_path'].'/images'.$this->data['path'];
+
+			if(!file_exists($this->data['path_new'])) {
+				rename($this->data['path_old'],$this->data['path_new']);
+				$this->item['path']=$path_to_file.'/'.$this->data['name'];
+				$this->item['old']=$this->data['path'];
+			}else{
+				$this->set_error('Already exist!');
+			}
 		}
+		return $this->once_response();
+	}
+	function item_new(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			// Check if dir exist if yes do it until +1
+			$this->data['path']=$this->data['root_path'].'/images'.$this->data['path'];
+
+			while(file_exists($this->data['path'].'/NewDir'.$i)){
+				$i++;
+			}
+
+			$this->data['path']=$this->data['path'].'/NewDir'.$i;
+				
+			@mkdir($this->data['path']);
+			@chmod($this->data['path'], 0777);
+				
+				
+			$this->item['name']='NewDir'.$i;
+		}
+		return $this->once_response();
 	}
 	
-	function upload_files(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin or just user
-			if($this->once_creator_check()){
-				//extract extension
-				$image_extensions_allowed = array('jpg', 'jpeg', 'png', 'gif');
+	function upload_files(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			//extract extension
+			$image_extensions_allowed = array('jpg', 'jpeg', 'png', 'gif');
 
-				// Get count of returned records
-				for($i=0;$i<count($this->data["files"]["error"]);$i++){
-					if(!$this->data["files"]["error"][$i]){
-	
-						$extension = strtolower(substr($this->data["files"]['name'][$i], strrpos($this->data["files"]['name'][$i], '.') + 1));
-						
-						// Check extension
-						if(in_array($extension, $image_extensions_allowed)){
-							$image_mimes_allowed = array("image/gif","image/png","image/jpeg","image/pjpeg");
-							$imageinfo = getimagesize($this->data["files"]['tmp_name'][$i]);
+			// Get count of returned records
+			for($i=0;$i<count($this->data["files"]["error"]);$i++){
+				if(!$this->data["files"]["error"][$i]){
+
+					$extension = strtolower(substr($this->data["files"]['name'][$i], strrpos($this->data["files"]['name'][$i], '.') + 1));
+					
+					// Check extension
+					if(in_array($extension, $image_extensions_allowed)){
+						$image_mimes_allowed = array("image/gif","image/png","image/jpeg","image/pjpeg");
+						$imageinfo = getimagesize($this->data["files"]['tmp_name'][$i]);
 								
-							// Check mime
-							if(isset($imageinfo) && in_array($imageinfo['mime'], $image_mimes_allowed)){
-								// Check size up to 1MB
-								if($this->data["files"]["size"][$i]<= 1000000) {
-									// If new fie
-									$this->data['currentImage']=$this->data['root_path'].'/images'.$this->data['path'].'/'.$this->data["files"]['name'][$i];
+						// Check mime
+						if(isset($imageinfo) && in_array($imageinfo['mime'], $image_mimes_allowed)){
+							// Check size up to 1MB
+							if($this->data["files"]["size"][$i]<= 1000000) {
+								// If new fie
+								$this->data['currentImage']=$this->data['root_path'].'/images'.$this->data['path'].'/'.$this->data["files"]['name'][$i];
 
-									// Make sure image dir exist
-									@mkdir($this->data['root_path'].'/images'.$this->data['path'].'');
-									@chmod($this->data['root_path'].'/images'.$this->data['path'].'', 0777);
+								// Make sure image dir exist
+								@mkdir($this->data['root_path'].'/images'.$this->data['path'].'');
+								@chmod($this->data['root_path'].'/images'.$this->data['path'].'', 0777);
 									
-									// Move uploaded file to upload dir
-									move_uploaded_file($this->data["files"]["tmp_name"][$i],$this->data['currentImage']);
+								// Move uploaded file to upload dir
+								move_uploaded_file($this->data["files"]["tmp_name"][$i],$this->data['currentImage']);
 											
-									// Resize image
-									$this->once_image_resample($this->data['currentImage']);
-										
-									$obj['status']='ok';
-								}else{
-									$obj['errors'][]='We only accept images up to 1MB';
-									$obj['error']++;
-								}
+								// Resize image
+								$this->once_image_resample($this->data['currentImage']);
 							}else{
-								$obj['errors'][]='We only accept GIF and JPEG images';
-								$obj['error']++;
+								$this->set_error('We only accept images up to 1MB');
 							}
 						}else{
-							$obj['errors'][]='Extension not allowed';
-							$obj['error']++;
+							$this->set_error('We only accept GIF and JPEG images');
 						}
 					}else{
-						$obj['errors'][]='Upload error';
-						$obj['error']++;
+						$this->set_error('Extension not allowed');
 					}
+				}else{
+					$this->set_error('Upload error');
 				}
-			}else{
-				$obj['errors'][]='You don\'t have permission!';
-				$obj['error']++;
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 }
 ?>

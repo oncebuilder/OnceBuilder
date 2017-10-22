@@ -15,7 +15,7 @@ $once->set_data(array(
 ));
 
 # GET DATA -------------------
-$data=$once->once_select_item(strtolower($_GET['module']).'_types');
+$data=$once->once_select_item(strtolower($once->filter_html($_GET['module'])).'_types');
 
 # GET DATA -------------------
 $once->type_get(strtolower($_GET['module']));

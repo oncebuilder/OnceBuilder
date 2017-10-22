@@ -15,9 +15,9 @@ $once->set_data(array(
 ));
 
 # DECLARE SORT ARRAY -------------------
-$data_sources_path=array('','plugins/'.$_GET['id'],'plugins/'.$_GET['id'],'plugins/'.$_GET['id'],'plugins/'.$_GET['id']);
-$data_sources_files=array('','ui.php','plugin.php','plugin.css','plugin.js','dependencies.html');
-$data_sources_titles=array('','Plugin UI','PHP','CSS','JS','DEPENDENCIES');
+$data_sources_path=array('','plugins/'.$_GET['id'],'plugins/'.$_GET['id'],'plugins/'.$_GET['id'],'plugins/'.$_GET['id'],'plugins/'.$_GET['id']);
+$data_sources_files=array('','ui.php','plugin.php','plugin.css','plugin.js','dependencies.html','config.php');
+$data_sources_titles=array('','Plugin UI','PHP','CSS','JS','DEPENDENCIES','CONFIG');
 $data_sources_count=count($data_sources_files);
 
 # GET DATA -------------------
@@ -114,15 +114,23 @@ echo '
 															</div>
 														</div>
 														<div class="row">
-															<div class="col-md-6">
+															<div class="col-md-4">
 																<div class="form-group">
-																	<label for="fw_css">Framework CSS</label>
-																	<select class="form-control" name="fw_css">
-																		<option value="1" <?php echo ($data['item']['fw_css']==0?'selected':'');?>>Bootstrap</option>
+																	<label for="fw_php">Framework PHP</label>
+																	<select class="form-control" name="fw_js">
+																		<option value="0" <?php echo ($data['item']['fw_php']==0?'selected':'');?>></option>
 																	</select>
 																</div>
 															</div>
-															<div class="col-md-6">
+															<div class="col-md-4">
+																<div class="form-group">
+																	<label for="fw_css">Framework CSS</label>
+																	<select class="form-control" name="fw_js">
+																		<option value="0" <?php echo ($data['item']['fw_css']==0?'selected':'');?>></option>
+																	</select>
+																</div>
+															</div>
+															<div class="col-md-4">
 																<div class="form-group">
 																	<label for="fw_js">Framework JS</label>
 																	<select class="form-control" name="fw_js">

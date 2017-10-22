@@ -20,6 +20,9 @@ $_GET['route'] = isset($_GET['route']) ? $_GET['route'] : '';
 # LANGS -------------------
 {langs}
 
+# SEO -------------------
+{seo}
+
 # CLASS -------------------
 {classes}
 

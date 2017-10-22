@@ -391,7 +391,7 @@ once.pages = {
 					}else{
 						// Restore selection
 						$('option[value=-1]').prop("disabled",true);
-						obj.find('option[value='+data.old+']').prop("selected",true);
+						obj.find('option[value='+data.item.old+']').prop("selected",true);
 						
 						console.log("Action Error: "+data.error);
 					}
@@ -460,6 +460,9 @@ once.pages = {
 			})
 			.error(function() { console.log("Request Error: item_delete"); });
 		}
+	},
+	itemCode: function(obj){//ok
+		
 	},
 	itemEditDelete: function(obj){//ok
 		// Get varibles defined in rendering data-*
@@ -618,6 +621,9 @@ once.pages.actions = {
 		// Initialize itemEdit dialog
 		once.pages.dialogs.itemEdit(".item-edit");
 		
+		// Initialize itemEdit code
+		once.pages.dialogs.itemCode(".item-code");
+		
 		// Delete item
 		$(".item-delete").click(function () {
 			once.pages.itemDelete($(this));
@@ -764,7 +770,7 @@ once.pages.actions = {
 				$.get(tab.attr('data-ajax'), function(data) {
 					$("#ajax-grid-plugin").html(data);
 				})
-				.error(function() { console.log("Request Error: load_source"); });
+				.error(function() { console.log("Request Error: load_edit_grid_plugin"); });
 			}else if(tab.attr('href')=='#edit_grid_source'){
 				// Set other settings
 				$("#grid-data").data("editor",tab.attr('data-editor'));
@@ -819,17 +825,22 @@ once.pages.actions = {
 				// Reset
 				$("#code-playground").html('');
 
-				// Load file
-				$.getJSON("ajax.php?c=pages&o=load_source&id="+$("#grid-data").data("id")+"&page_id="+$("#grid-data").data("page_id")+"&file="+tab.attr('data-file'), function(data) {
-					if(data.status=='ok'){
-						// Fill editor
-						once.editors[1].setValue(data.source);
-						
-						// Set editor mode
-						once.editors[1].setOption('mode', mode);
-					}else{
-						console.log("Action Error: "+data.error);
-					}
+				$.ajax({
+					type: 'POST',
+					url: once.path+"/ajax.php?c=pages&o=load_source&id="+$("#grid-data").data("id")+"&page_id="+$("#grid-data").data("page_id")+"&file="+tab.attr('data-file'),
+					success: function(data) { 
+						if(data.status=='ok'){
+							// Fill editor
+							once.editors[1].setValue(data.item.source);
+										
+							// Set editor mode
+							once.editors[1].setOption('mode', mode);
+						}else{
+							console.log("Action Error: "+data.error);
+						}
+					},
+					contentType: "application/json",
+					dataType: 'json'
 				})
 				.error(function() { console.log("Request Error: load_source"); });
 			}
@@ -882,13 +893,33 @@ once.pages.actions = {
 once.pages.dialogs = {
 	itemEdit: function(obj){//ok
 		// Append at end of the body
-		$("body").append("<div id=\"item-edit\"></div>");
+		if($("#item-edit").length==0){
+			$("body").append("<div id=\"item-edit\"></div>");
+		}
 
 		// Read and open edit dialog
 		$(obj).click(function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 			$("#item-edit").load(once.path+"/dialog.php?c=pages&o=edit&id="+$(this).parent().parent().data("id"), function() {
+				$('#item-edit .modal:first').modal({
+					show: 'false'
+				}); 
+			})
+			.error(function() { console.log("Dialog Error: edit"); });
+		});
+	},
+	itemCode: function(obj){//ok
+		// Append at end of the body
+		if($("#item-edit").length==0){
+			$("body").append("<div id=\"item-edit\"></div>");
+		}
+
+		// Read and open edit dialog
+		$(obj).click(function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$("#item-edit").load(once.path+"/dialog.php?c=pages&o=edit&id="+$(this).parent().parent().data("id")+"&tab=edit_grid", function() {
 				$('#item-edit .modal:first').modal({
 					show: 'false'
 				}); 

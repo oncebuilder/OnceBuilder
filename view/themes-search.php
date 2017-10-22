@@ -185,7 +185,7 @@ $data=$response['data'];
 											<a href="#" class="label label-default item-view" title="Theme preview">Theme preview</a>
 										</p>
 									</div>
-									<img src="http://oncebuilder.com/once/themes/'.$data['items'][$key]['id'].'/thumbnail.png" onerror="this.src=\'/once/img/theme.png\'">
+									<img src="https://oncebuilder.com/once/themes/'.$data['items'][$key]['id'].'/thumbnail.png" onerror="this.src=\'/once/img/theme.png\'">
 								</div>
 							</div>
 						</div>
@@ -204,7 +204,7 @@ $data=$response['data'];
 			if(isset($response['error'])){
 				echo '
 				<div class="col-md-12">
-					You are not subscribed. More info at <a target="_blank" href="http://oncebuilder.com">oncebuilder.com</a>
+					You are not subscribed. More info at <a target="_blank" href="https://oncebuilder.com">oncebuilder.com</a>
 				</div>';
 			}else{
 				echo '

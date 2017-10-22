@@ -30,7 +30,7 @@ $data=$once->item_preview();
 						echo '<button class="btn btn-success btn-sm pull-right item-download" type="button"><i class="fa fa-plus"></i> Download</button>';
 					}
 					?>
-					<a href="http://oncebuilder.com/theme/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
+					<a href="https://oncebuilder.com/theme/<?php echo $_GET['id'];?>" target="_blank" class="btn btn-default btn-sm pull-right item-link" type="button"><i class="fa fa-link"></i> More info</a>
 					</h4>
 				</div>
 				<div class="modal-body">
@@ -64,7 +64,7 @@ $data=$once->item_preview();
 								<div class="tab-pane active" id="preview_settings">
 									<div class="row margin">
 										<div class="col-md-3">
-											<img src="http://oncebuilder.com/once/themes/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='img/theme.png'">
+											<img src="https://oncebuilder.com/once/themes/<?php echo $_GET['id'];?>/thumbnail.png" onerror="this.src='img/theme.png'">
 										</div>
 										<div class="col-md-9">
 											<h1><?php echo $data['item']['name'];?></h1>
@@ -104,14 +104,16 @@ $data=$once->item_preview();
 											<label for="title">Images</label>
 										</div>
 										<?php
-											for($i=1;$i<10;$i++){
+										if(isset($data['item']['images'])){
+											foreach($data['item']['images'] as $k => $v){
 												echo '
-												<div id="image_'.$i.'" class="col-md-3">
+												<div id="image_'.$k.'" class="col-md-3">
 													<div class="thumbnail image">
-														<img id="item-image" src="http://www.oncebuilder.com/once/themes/'.$_GET['id'].'/images/ss'.$i.'.png?'.time().'" onerror="this.src=\'img/theme.png\'; $(this).parent().parent().addClass(\'hidden\');">
+														<img id="item-image" src="http://www.oncebuilder.com/once/themes/'.$_GET['id'].'/images/'.$v.'" onerror="this.src=\'img/theme.png\'; $(this).parent().parent().addClass(\'hidden\');">
 													</div>
 												</div>';
 											}
+										}
 										?>
 									</div>
 								</div>

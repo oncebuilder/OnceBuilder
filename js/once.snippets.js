@@ -248,7 +248,7 @@ once.snippets = {
 	},
 	itemEditSave: function(obj){//ok
 		// Save selected source or just item edit
-		if($("#snippet-data").data("tab")!==undefined){
+		if($("#snippet-data").data("tab")=='#edit_source'){
 			once.snippets.itemEditSaveSource();
 		}else{
 			$("#editForm").submit();
@@ -265,6 +265,8 @@ once.snippets = {
 					$("#snippet-preview iframe").attr("src",once.path+"/snippets/"+$("#snippet-data").data("id")+"/index.php?"+Math.random());
 					$("#edit_preview iframe").attr("src",once.path+"/snippets/"+$("#snippet-data").data("id")+"/index.php?"+Math.random());
 				}
+				$("#"+$("#snippet-data").data("path")).html(once.editors[1].getValue());
+				
 				console.log("Source saved");
 			})
 			.error(function() { console.log("Request Error: save_source"); });
@@ -493,16 +495,7 @@ once.snippets = {
 		// Get varibles defined in rendering data-*
 		var id=$("#snippet-data").data('id');
 		// Open ajax request to api
-		document.location.href="/ajax.php?c=snippets&o=item_user_download&id="+id;
-	},
-	itemUserReport: function(obj){
-		// Read and open report dialog
-		$("#item-reported").load(once.path+"/dialog.php?c=snippets&o=report&id="+obj.parent().parent().data('id'), function() {
-			$('#item-reported .modal:first').modal({
-				show: 'false'
-			}); 
-		})
-		.error(function() { console.log("Dialog Error: report"); });
+		document.location.href=once.path+"/ajax.php?c=snippets&o=item_user_download&id="+id;
 	},
 }
 
@@ -638,7 +631,7 @@ once.snippets.actions = {
 			var tab = $(this); // current tab
 			var previous = e.relatedTarget; // previous active tab
 			var previous_id = $(e.relatedTarget).data('editor');
-			
+
 			$("#snippet-data").data("tab",tab.attr('href'));
 			
 			// Load tab content
@@ -669,30 +662,36 @@ once.snippets.actions = {
 						mode='javascript';
 					break;
 				}
-				
+	
 				once.editors[1].focus();
-				
+
 				// Reset
 				$("#ajax-playground").html('');
-				
+
 				// Load file
 				if(once.cms){
 					// Load file
-					$.getJSON(once.path+"/ajax.php?c=snippets&o=load_source&id="+$('#snippet-data').data("id")+"&file="+tab.attr('data-file'), function(data) {
-						if(data.status=='ok'){
-							// Fill editor
-							once.editors[1].setValue(data.source);
-							
-							// Set editor mode
-							once.editors[1].setOption('mode', mode);
-						}else{
-							console.log("Action Error: "+data.error);
-						}
+					$.ajax({
+						type: 'POST',
+						url: once.path+"/ajax.php?c=snippets&o=load_source&id="+$('#snippet-data').data("id")+"&file="+tab.attr('data-file'),
+						success: function(data) { 
+							if(data.status=='ok'){
+								// Fill editor
+								once.editors[1].setValue(data.item.source);
+											
+								// Set editor mode
+								once.editors[1].setOption('mode', mode);
+							}else{
+								console.log("Action Error: "+data.error);
+							}
+						},
+						contentType: "application/json",
+						dataType: 'json'
 					})
 					.error(function() { console.log("Request Error: load_source"); });
 				}else{
 					// Get source from page
-					var source=$("#source_"+tab.attr('data-editor')).html();
+					var source=$("#"+tab.attr('data-path')).html();
 					source=source.replaceAll("&amp;","&");
 					source=source.replaceAll("&quot;","\"");
 					source=source.replaceAll("&lt;","<");
@@ -788,6 +787,22 @@ once.snippets.actions = {
 		$("#snippet-data .item-image-delete").click(function () {
 			once.snippets.itemEditImageDelete($(this));
 		});
+		
+		// Website functions
+		$("#snippet-data .item-user-fork").click(function () {
+			once.snippets.itemUserFork($(this));
+		});
+		
+		$("#snippet-data .item-user-vote").click(function () {
+			once.snippets.itemUserVote($(this));
+		});
+		
+		$("#snippet-data .item-user-download").click(function () {
+			once.snippets.itemUserDownload($(this));
+		});
+		
+		// Initialize itemEdit dialog
+		once.snippets.dialogs.itemUserReport(".item-user-report");
 
 		// Initialize editForm
 		once.snippets.forms.editForm($(this));
@@ -964,6 +979,22 @@ once.snippets.dialogs = {
 			.error(function() { console.log("Dialog Error: publish"); });
 		});
 	},
+	itemUserReport: function(obj){
+		// Append at end of the body
+		$("body").append("<div id=\"item-user-report\"></div>");
+
+		// Read and open report dialog
+		$(obj).click(function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$("#item-user-report").load(once.path+"/dialog.php?c=snippets&o=report&id="+$("#snippet-data").data("id"), function() {
+				$('#item-user-report .modal:first').modal({
+					show: 'false'
+				}); 
+			})
+			.error(function() { console.log("Dialog Error: report"); });
+		});
+	},
 }
 
 once.snippets.forms = {
@@ -999,57 +1030,7 @@ once.snippets.forms = {
 				if(data.status=='ok'){
 					// Check for redirects then save
 					if($("#snippet-data").data('redirect')!==undefined){
-						// Get editor id
-						var editor=$("#snippet-data").data("editor");
-						
-						if(editor==1){
-							var source = rawurlencode(once.editors[1].getValue());
-						}else{
-							var source = rawurlencode($("#source_1").html());
-						}
-						
-						var load=false;
-						var post=false;
-						
-						$.post("/ajax.php?c=snippets&o=save_source&id="+$("#snippet-data").data("id")+"&file=snippet.html", { source: source }, function(data) {
-							console.log("Source saved");
-							post++;
-							if(!load && post==3){
-								document.location.href=$("#snippet-data").data('redirect');
-								load=true;
-							}
-						})
-						.error(function() { console.log("Request Error: save_source"); });
-						
-						if(editor==2){
-							var source = rawurlencode(once.editors[1].getValue());
-						}else{
-							var source = rawurlencode($("#source_2").html());
-						}
-						$.post("/ajax.php?c=snippets&o=save_source&id="+$("#snippet-data").data("id")+"&file=snippet.css", { source: source }, function(data) {
-							console.log("Source saved");
-							post++;
-							if(!load && post==3){
-								document.location.href=$("#snippet-data").data('redirect');
-								load=true;
-							}
-						})
-						.error(function() { console.log("Request Error: save_source"); });
-						
-						if(editor==3){
-							var source = rawurlencode(once.editors[1].getValue());
-						}else{
-							var source = rawurlencode($("#source_3").html());
-						}
-						$.post("/ajax.php?c=snippets&o=save_source&id="+$("#snippet-data").data("id")+"&file=snippet.js", { source: source }, function(data) {
-							console.log("Source saved");
-							post++;
-							if(!load && post==3){
-								document.location.href=$("#snippet-data").data('redirect');
-								load=true;
-							}
-						})
-						.error(function() { console.log("Request Error: save_source"); });
+						document.location.href=$("#snippet-data").data('redirect');
 					}
 					
 					if($("#snippet-data").data('redirect')==undefined){
@@ -1185,6 +1166,15 @@ $(document).ready(function () {
 	$(".item-new").click(function () {
 		once.snippets.itemNew($(this));
     });
+	
+	$(".item-user-publish").click(function () {
+		once.snippets.itemUserPublish($(this));
+    });
+	
+	$(".item-presave").click(function () {
+		once.snippets.itemEditSave($(this));
+    });
+	
 	
 	// Initialize publish dialog
 	once.snippets.dialogs.itemPublish(".item-publish");

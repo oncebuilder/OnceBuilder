@@ -10,70 +10,39 @@
 */
 
 class once extends core{
-	function bulk_action(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin
-			if($this->once_creator_check()){
-				// Prepare statements to star selected id.
-				$stmt1 = $this->pdo->prepare("UPDATE edit_mailbox SET stared = 1 WHERE id=:id");
+	function bulk_action(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			// Prepare statements to star selected id.
+			$stmt1 = $this->pdo->prepare("UPDATE edit_mailbox SET stared = 1 WHERE id=:id");
 				
-				// Prepare statements to unstar selected id.
-				$stmt2 = $this->pdo->prepare("UPDATE edit_mailbox SET stared = 0 WHERE id=:id");
+			// Prepare statements to unstar selected id.
+			$stmt2 = $this->pdo->prepare("UPDATE edit_mailbox SET stared = 0 WHERE id=:id");
 				
-				// Prepare statements to delete selected id.
-				$stmt3 = $this->pdo->prepare("DELETE FROM edit_mailbox WHERE id=:id");
+			// Prepare statements to delete selected id.
+			$stmt3 = $this->pdo->prepare("DELETE FROM edit_mailbox WHERE id=:id");
 					
-				// Loop bulk items and make action
-				foreach ($this->data['ids'] as $position => $item){
-					$obj['ids'][]=$position;
-					// Check action type then do it
-					if($this->data['action']=='star'){
-						$stmt1->bindParam(':id', $position, PDO::PARAM_INT);
-						$stmt1->execute();
-					}else if($this->data['action']=='unstar'){
-						$stmt2->bindParam(':id', $position, PDO::PARAM_INT);
-						$stmt2->execute();
-					}else if($this->data['action']=='delete'){
-						$stmt3->bindParam(':id', $position, PDO::PARAM_INT);
-						$stmt3->execute();
-					}
+			// Loop bulk items and make action
+			foreach ($this->data['ids'] as $position => $item){
+				$this->item['ids'][]=$position;
+				// Check action type then do it
+				if($this->data['action']=='star'){
+					$stmt1->bindParam(':id', $position, PDO::PARAM_INT);
+					$stmt1->execute();
+				}else if($this->data['action']=='unstar'){
+					$stmt2->bindParam(':id', $position, PDO::PARAM_INT);
+					$stmt2->execute();
+				}else if($this->data['action']=='delete'){
+					$stmt3->bindParam(':id', $position, PDO::PARAM_INT);
+					$stmt3->execute();
 				}
-				$obj['status']='ok';
-			}else{
-				$obj['errors'][]='You don\'t have permission!';
-				$obj['error']++;
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function set_limit(){//ok
+	function set_limit(){
 		// Update page limit with once
 		$this->once_page_limit('mailbox');
-		$obj['status']='ok';
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 
 	function get_mailbox($table){
@@ -196,8 +165,7 @@ class once extends core{
 		$stmt->execute();
 
 		// Get count of returned records
-		$obj['count']=$stmt->rowCount();
-		if($obj['count']){
+		if($stmt->rowCount()){
 			// Return result in table
 			foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				$obj['items'][]=$row;
@@ -211,122 +179,71 @@ class once extends core{
 			return false;
 		}
 	}
-	
-	
+
 	function item_new(){
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-				
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			if($this->once_creator_check()){
-				// Check settings if mailer is on
-				$stmt = $this->pdo->prepare("SELECT * FROM edit_settings LIMIT 1");
-				//$stmt->bindParam(':email_to', $this->data['email_to'], PDO::PARAM_STR, 30);
-				$stmt->execute();
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			// Check settings if mailer is on
+			$stmt = $this->pdo->prepare("SELECT * FROM edit_settings LIMIT 1");
+			//$stmt->bindParam(':email_to', $this->data['email_to'], PDO::PARAM_STR, 30);
+			$stmt->execute();
 
-				//2do
-				$obj['count']=$stmt->rowCount();
-				if($obj['count']){
-					
-				}
+			//@2do settings on
+			if($stmt->rowCount()){
 				
-				// Check if user exist
-				$stmt = $this->pdo->prepare("SELECT * FROM edit_users WHERE email=:email_to LIMIT 1");
-				$stmt->bindParam(':email_to', $this->data['email_to'], PDO::PARAM_STR, 30);
-				$stmt->execute();
+			}
+				
+			// Check if user exist
+			$stmt = $this->pdo->prepare("SELECT * FROM edit_users WHERE email=:email_to LIMIT 1");
+			$stmt->bindParam(':email_to', $this->data['email_to'], PDO::PARAM_STR, 30);
+			$stmt->execute();
 
-				// Get count of returned records
-				$obj['count']=$stmt->rowCount();
-				if($obj['count']){
-					$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
+			// Get count of returned records
+			if($stmt->rowCount()){
+				$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
 					
-					// Prepare statements to get selected id.
-					$stmt = $this->pdo->prepare("INSERT INTO edit_mailbox (user_id, type_id, user_id_to, title, message, time) VALUES('".$this->data['user_id']."', 2 , ".$obj['item']['id'].", '".$this->data['title']."', '".$this->data['message']."', ".$this->data['time'].")");
-					$stmt->execute();
+				// Prepare statements to get selected id.
+				$stmt = $this->pdo->prepare("INSERT INTO edit_mailbox (user_id, type_id, user_id_to, title, message, time) VALUES('".$this->data['user_id']."', 2 , ".$this->item['id'].", '".$this->data['title']."', '".$this->data['message']."', ".$this->data['time'].")");
+				$stmt->execute();
 					
-					// Get item object
-					$obj['item']=array(
-						"id" => $this->pdo->lastInsertId(),
-						"type_id" => 2
-					);
+				// Get item object
+				$this->item=array(
+					"id" => $this->pdo->lastInsertId(),
+					"type_id" => 2
+				);
 					
-					if($obj['item']['id']){
-						// Set status ok
-						$obj['status']='ok';
-					}else{
-						// Return error if item not created
-						$obj['errors'][]='can not insert item to: users';
-						$obj['error']++;
-					}
-				}else{
-					// Return error if item not created
-					$obj['errors'][]='User not exist';
-					$obj['error']++;
+				if(!$this->item['id']){
+					$this->set_error('Can not insert item to: users');
 				}
 			}else{
-				$obj['errors'][]='You don\'t have permission!';
-				$obj['error']++;
+				$this->set_error('User not exist');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_star(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
+	function item_star(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			// Prepare statements to get all layers
+			$stmt = $this->pdo->prepare("SELECT * FROM edit_mailbox WHERE id=:id LIMIT 1");
+			$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
+			$stmt->execute();
 				
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			if($this->once_creator_check()){
-				// Prepare statements to get all layers
-				$stmt = $this->pdo->prepare("SELECT * FROM edit_mailbox WHERE id=:id LIMIT 1");
-				$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
-				$stmt->execute();
-				
-				if($stmt->rowCount()){
-					$row=$stmt->fetch(PDO::FETCH_ASSOC);
-					// Check if its stared/unstared then unstar/star
-					if($row['stared']==1){
-						$stmt = $this->pdo->prepare("UPDATE edit_mailbox SET stared=0 WHERE id=:id LIMIT 1");
-						$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
-						$stmt->execute();
-					}else{
-						$stmt = $this->pdo->prepare("UPDATE edit_mailbox SET stared=1 WHERE id=:id LIMIT 1");
-						$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
-						$stmt->execute();
-					}
-					$obj['status']='ok';
+			if($stmt->rowCount()){
+				$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
+				// Check if its stared/unstared then unstar/star
+				if($this->item['stared']==1){
+					$stmt = $this->pdo->prepare("UPDATE edit_mailbox SET stared=0 WHERE id=:id LIMIT 1");
+					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
+					$stmt->execute();
 				}else{
-					$obj['errors'][]='User not exist';
-					$obj['error']++;
+					$stmt = $this->pdo->prepare("UPDATE edit_mailbox SET stared=1 WHERE id=:id LIMIT 1");
+					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
+					$stmt->execute();
 				}
 			}else{
-				$obj['errors'][]='You don\'t have permission';
-				$obj['error']++;
+				$this->set_error('User not exist');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid';
-			$obj['error']++;
 		}
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 }
 ?>

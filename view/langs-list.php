@@ -77,13 +77,13 @@ $once->set_data(array(
 //$categories=$once->once_select_items('langs_types');
 
 # GET DATA -------------------
-$data=$once->once_select_items_page('langs','all');
+$data=$once->once_select_items_page('langs','project_id');
 
 # GET DATA -------------------
 $project_langs=$once->once_lang_list();
 
 # GET DATA -------------------
-$langs=$once->once_select_items('langs','project_id');
+$langs=$once->once_select_items('langs');
 if($langs['items']){
 	foreach($langs['items'] as $key => $val){
 		$langs_a[$langs['items'][$key]['lang_id']]=$langs['items'][$key]['name']."".$langs['items'][$key]['name_id'];

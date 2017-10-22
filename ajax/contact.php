@@ -18,6 +18,7 @@ $once->set_data(array("ajax" => true, "csrf_token" => $_GET['csrf_token']));
 switch($_GET['o']){
 	case 'send_message':
 		$once->set_data(array(
+			"g-recaptcha" => $once->filter_string($_POST['g-recaptcha']),
 			"name" => $once->filter_string($_POST['name']),
 			"email" => $once->filter_string($_POST['email']),
 			"message" => $once->filter_string($_POST['message'])

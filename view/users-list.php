@@ -175,7 +175,7 @@ $data=$once->once_select_items_page('users');
 											<td class="small-col"><input type="checkbox" name="ids['.$data['items'][$key]['id'].']"/></td>
 											<td class="small-col"><i class="fa fa-star'.($data['items'][$key]['stared']==0?'-o':'').' item-star"></i></td>
 											<td data-link="username" class="item-username">'.$data['items'][$key]['username'].'</td>
-											<td data-link="email" class="item-email">'.$data['items'][$key]['email'].'</td>
+											<td data-link="email" class="item-email">'.($once->once_creator_check()==true?$data['items'][$key]['email']:'This cant be displayed').'</td>
 											<td data-link="type_id" class="item-type_id text-center">';
 											if(isset($types_a[$data['items'][$key]['type_id']])){
 												echo $types_a[$data['items'][$key]['type_id']];

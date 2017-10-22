@@ -25,7 +25,7 @@ $_GET['c'] = isset($_GET['c']) ? $_GET['c'] : '';
 
 // Is it required??
 if(!preg_match("/^[a-zA-Z0-9_.]+$/i",$_GET['c'])) exit;
-if($_GET['o']!='' && !preg_match("/^[a-zA-Z0-9_.]+$/i",$_GET['o'])) exit;
+if($_GET['o']!='' && !preg_match("/^[a-zA-Z0-9_.-]+$/i",$_GET['o'])) exit;
 
 // Secure var
 $home=true;
@@ -45,6 +45,9 @@ require_once('class/'.$_GET['c'].'.class.php');
 // CREATE OBJECT CLASS -------------------
 $once = new once($_CONFIG);
 
-// Require connector depends on type and let it do work
-require_once('view/'.$_GET['c'].''.($_GET['o']==''?'':'-'.$_GET['o']).'.php');
+if($once->once_creator_check() || $once->once_demo()){
+	// Require connector depends on type and let it do work
+	require_once('view/'.$_GET['c'].''.($_GET['o']==''?'':'-'.$_GET['o']).'.php');
+}
+
 ?>

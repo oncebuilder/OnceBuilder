@@ -27,7 +27,7 @@ echo '
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title"><i class="fa fa-bars"></i> Edit <?php echo $data['file']===true?'file':'dir';?></h4>
+					<h4 class="modal-title"><i class="fa fa-bars"></i> Edit <?php echo $data['item']['file']===true?'file':'dir';?></h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">
@@ -43,7 +43,7 @@ echo '
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<?php echo $data['file']===true?'<img src="/images'.$_GET['path'].'">':'';?>
+							<?php echo $data['item']['file']===true?'<img src="/images'.$_GET['path'].'">':'';?>
 						</div>
 					</div>
 				</div>

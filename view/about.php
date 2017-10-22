@@ -43,9 +43,9 @@ $str='
 	<div class="col-md-12">
 		<div class="box">
 			<div id="content-body" class="box-body margin">
-				<p>Thank you for downloading OnceBuilder CMS Beta</p>
+				<p>Thank you for checking out OnceBuilder CMS Beta</p>
 				</br>
-				<p>Now you can try to build your first site with OnceBuilder. It\'s like build from Lego! Idea about building site with HTML blocks appread in 2012!</p>
+				<p>Now you can build your first site with OnceBuilder. It\'s like build from Lego! Idea about building site with HTML blocks appread in 2012!</p>
 				<p>Visit our fanpage and let your friends know about new way of building websites! <a target="_blank" href="http://facebook.com/oncebuilder">http://facebook.com/oncebuilder</a></p>
 				</br>
 				<iframe width="560" height="315" src="https://www.youtube.com/embed/tBEQgegLGOQ" frameborder="0" allowfullscreen></iframe>

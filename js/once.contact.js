@@ -1,11 +1,18 @@
+/**
+ * Version: 1.0, 01.07.2015
+ * by Adam Wysocki, support@oncebuilder.com
+ *
+ * Copyright (c) 2015 Adam Wysocki
+ *
+ *	This is OnceBuilder Contact plugin (once.contact)
+ *
+*/
+
 $(document).ready(function () {
 	// Load code mirror library & modes
 	once.loadJSfile(once.path+'/libs/jquery-form/jquery.form.js');
 	once.loadJSfile(once.path+'/libs/jquery-validation/dist/jquery.validate.js');
-	
-	// Load code mirror styles
-	once.loadCSSfile('http://www.css-spinners.com/css/spinners.css');
-	
+
 	if($("#contactForm").length>0){
 		// First validate
 		var container = $('.message-error');
@@ -35,19 +42,29 @@ once.contact.forms = {
 		var options = {
 			dataType:  "json",
 			success: function(data){
-				// If response ok refresh logo
-				if(data.status!='ok'){
-					$(".message-sent").show();
-					$(".message-error").hide();
+				if(data.status=='ok'){
+					$("#contactForm .message-sent").show();
+					$("#contactForm  .message-error").hide();
 					
 					$("textarea").attr("disabled",true);
 					
 					$("input").attr("disabled",true);
 					
-					console.log("message sent!");
+					console.log("Message sent!");
 				}else{
-					$(".message-sent").hide();
-					$(".message-error").show();
+					var str='';
+					var length=data.errors.length;
+					if(length>0){
+						for(var i=0; i<length; i++){
+							str+='<li>'+data.errors[i]+'</li>';
+						}
+					}
+					
+					$("#contactForm .message-error").find("ol").show();
+					$("#contactForm .message-error").find("ol").html(str);
+
+					$("#contactForm .message-sent").hide();
+					$("#contactForm .message-error").show();
 					
 					console.log("Action Error: "+data.error);
 				}

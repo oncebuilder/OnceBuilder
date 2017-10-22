@@ -10,13 +10,15 @@
 */
 	
 class once extends core{
-	function api_search(){//ok
+	function api_search(){
 		// Check if user exist by api_key
 		$stmt = $this->pdo->prepare("SELECT * FROM edit_users WHERE api_key=:api_key LIMIT 1");
 		$stmt->bindParam(':api_key', $this->data['api'], PDO::PARAM_STR, 255);
 		$stmt->execute();
 
 		if($stmt->rowCount()){
+			$row=$stmt->fetch(PDO::FETCH_ASSOC);
+			
 			# XAMPP fix without turning error info off -------------------
 			$_GET['page'] = isset($_GET['page']) ? $_GET['page'] : 1;
 			$_GET['ids'] = isset($_GET['ids']) ? $_GET['ids'] : '';
@@ -62,11 +64,11 @@ class once extends core{
 				$stmt->execute();
 
 				// Return result in table
-				$row=$stmt->fetch(PDO::FETCH_ASSOC);
+				$rowx=$stmt->fetch(PDO::FETCH_ASSOC);
 
 				// Check if item exist
-				if($row['id']){
-					$_GET['category_id']=$row['id'];
+				if($rowx['id']){
+					$_GET['category_id']=$rowx['id'];
 				}
 			}
 
@@ -76,7 +78,7 @@ class once extends core{
 				"category_id" => intval($_GET['category_id']),
 				"page" => intval($_GET['page']),
 				"sort_by" => $data_sort[$_GET['sort_by']],
-				"ids" => $_GET['idsx'],
+				//"ids" => $_GET['idsx'], @2do unblock
 				"query" => $this->filter_string($_GET['query']),
 				"query_in" => array('name','description'),
 				"where" => 'published=1'
@@ -101,76 +103,45 @@ class once extends core{
 			return $obj;
 		}
 	}
-	function bulk_action(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin
-			if($this->once_creator_check()){
-				// Prepare statements to star selected id.
-				$stmt1 = $this->pdo->prepare("UPDATE edit_snippets SET stared = 1 WHERE id=:id");
+	function bulk_action(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			// Prepare statements to star selected id.
+			$stmt1 = $this->pdo->prepare("UPDATE edit_snippets SET stared = 1 WHERE id=:id");
 				
-				// Prepare statements to unstar selected id.
-				$stmt2 = $this->pdo->prepare("UPDATE edit_snippets SET stared = 0 WHERE id=:id");
+			// Prepare statements to unstar selected id.
+			$stmt2 = $this->pdo->prepare("UPDATE edit_snippets SET stared = 0 WHERE id=:id");
 				
-				// Prepare statements to delete selected id.
-				$stmt3 = $this->pdo->prepare("DELETE FROM edit_snippets WHERE id=:id");
+			// Prepare statements to delete selected id.
+			$stmt3 = $this->pdo->prepare("DELETE FROM edit_snippets WHERE id=:id");
 					
-				// Loop bulk items and make action
-				foreach ($this->data['ids'] as $position => $item){
-					$obj['ids'][]=$position;
-					// Check action type then do it
-					if($this->data['action']=='star'){
-						$stmt1->bindParam(':id', $position, PDO::PARAM_INT);
-						$stmt1->execute();
-					}else if($this->data['action']=='unstar'){
-						$stmt2->bindParam(':id', $position, PDO::PARAM_INT);
-						$stmt2->execute();
-					}else if($this->data['action']=='delete'){
-						$stmt3->bindParam(':id', $position, PDO::PARAM_INT);
-						$stmt3->execute();
-						
-						if($stmt3->rowCount()){
-							$this->recurse_delete($this->data['root_path'].'/once/snippets/'.$position.'');
-						}
+			// Loop bulk items and make action
+			foreach ($this->data['ids'] as $position => $item){
+				$obj['ids'][]=$position;
+				// Check action type then do it
+				if($this->data['action']=='star'){
+					$stmt1->bindParam(':id', $position, PDO::PARAM_INT);
+					$stmt1->execute();
+				}else if($this->data['action']=='unstar'){
+					$stmt2->bindParam(':id', $position, PDO::PARAM_INT);
+					$stmt2->execute();
+				}else if($this->data['action']=='delete'){
+					$stmt3->bindParam(':id', $position, PDO::PARAM_INT);
+					$stmt3->execute();
+					
+					if($stmt3->rowCount()){
+						$this->recurse_delete($this->data['root_path'].'/once/snippets/'.$position.'');
 					}
 				}
-				$obj['status']='ok';
-			}else{
-				$obj['errors'][]='No permission!';
-				$obj['error']++;
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function set_limit(){//ok
+	function set_limit(){
 		// Update page limit with once
 		$this->once_page_limit('snippets');
-		$obj['status']='ok';
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function twitter_publish($obj){//ok??
+	function twitter_publish(){
 		if($this->data['twitter_publish_on']){
 			// Include twitteroauth to post twitter
 			require_once($this->data['root_path'].'/once/libs/twitteroauth/twitteroauth/twitteroauth.php');
@@ -199,7 +170,7 @@ class once extends core{
 			// Short link before publish
 			require_once($this->data['root_path'].'/once/libs/bitlyphp/bitly.php');
 
-			$url='http://oncebuilder.com/snippet/'.$this->data['id'];
+			$url='https://oncebuilder.com/snippet/'.$this->data['id'];
 			
 			$params = array();
 			$params['access_token'] = $this->data['bitly_access_token'];
@@ -213,82 +184,53 @@ class once extends core{
 			}
 
 			// Prepare message to twitt
-			$message=$obj['item']['name'].' '.$url.' '.($obj['item']['author']!=''?' by @'.$obj['item']['author']:'');
+			$message=$this->item['name'].' '.$url.' '.($this->item['author']!=''?' by @'.$this->item['author']:'');
 
 			$parameters = array('status' => $message, 'media_ids' => $media1->media_id_string);
 			$status = $connection->post('statuses/update', $parameters);
 		}
 	}
 
-	function item_approve(){//ok
-		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			if($this->once_creator_check()){
-				// Prepare statements to get selected data
-				$stmt = $this->pdo->prepare("SELECT * FROM edit_snippets WHERE id=:id LIMIT 1");
-				$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
-				$stmt->execute();
+	function item_approve(){
+		if($this->once_csrf_token_check($this->data['csrf_token']) && $this->once_creator_check()){
+			// Prepare statements to get selected data
+			$stmt = $this->pdo->prepare("SELECT * FROM edit_snippets WHERE id=:id LIMIT 1");
+			$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
+			$stmt->execute();
 				
-				// Get count of returned records
-				$obj['count']=$stmt->rowCount();
-				if($obj['count']){
-					// Data as item
-					$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
-
-					// Check if its published/unpublished then unpublish/publish
-					if($obj['item']['published']==0){
-						//2do Check if it was already published on twitter then publish
-						if(true){
-							$this->twitter_publish($obj);
-						}
-						
-						// Set as published
-						$stmt = $this->pdo->prepare("UPDATE edit_snippets SET published=1 WHERE id=:id LIMIT 1");
-						$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
-						$stmt->execute();
-
-						// Set count for user when added
-						$this->data['user_id']=$obj['item']['user_id'];
-						$this->once_set_user_count('snippets');
-
-						$obj['status']='ok';
-					
-					}else{
-						// Prepare statements to publish selected data
-						$stmt = $this->pdo->prepare("UPDATE edit_snippets SET published=0 WHERE id=:id LIMIT 1");
-						$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
-						$stmt->execute();
-						
+			// Get count of returned recordsx
+			if($stmt->rowCount()){
+				// Data as item
+				$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
+				// Check if its published/unpublished then unpublish/publish
+				if($this->item['published']==0){
+					//@2do Check if it was already published on twitter then publish
+					if(true){
+						$this->twitter_publish();
 					}
-					$obj['status']='ok';
+						
+					// Set as published
+					$stmt = $this->pdo->prepare("UPDATE edit_snippets SET published=1 WHERE id=:id LIMIT 1");
+					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
+					$stmt->execute();
+
+					// Set count for user when added
+					$this->data['user_id']=$this->item['user_id'];
+					$this->once_set_user_count('snippets');
 				}else{
-					$obj['errors'][]='Snippet doesn\'t exist';
-					$obj['error']++;
+					// Prepare statements to publish selected data
+					$stmt = $this->pdo->prepare("UPDATE edit_snippets SET published=0 WHERE id=:id LIMIT 1");
+					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
+					$stmt->execute();
 				}
 			}else{
-				$obj['errors'][]='No permission!';
-				$obj['error']++;
+				$this->set_error('Snippet not exist');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_delete(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
+	function item_delete(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin or just user
 			if($this->once_creator_check()){
 				// Prepare statements to get snippet.
 				$stmt = $this->pdo->prepare("SELECT * FROM edit_snippets WHERE id=:id LIMIT 1");
@@ -301,42 +243,19 @@ class once extends core{
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->execute();
 			}
-			
 			// Get count of returned records
-			$obj['count']=$stmt->rowCount();
-			if($obj['count']){
+			if($stmt->rowCount()){
 				// Use once to delete item
-				$obj=$this->once_delete_item('snippets');
-				
-				if($obj['count']){
+				if($this->once_delete_item('snippets')){
 					$this->recurse_delete($this->data['root_path'].'/once/snippets/'.$this->data['id'].'');
 				}
-			}else{
-				$obj['errors'][]='Snippet not exist / for selected user';
-				$obj['error']++;
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_edit(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-
+	function item_edit(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
-			// Check if user is creator/admin or just user
-			if($this->once_creator_check()){
+			if($this->once_creator_check(true)){
 				// Prepare statements to get snippet.
 				$stmt = $this->pdo->prepare("SELECT * FROM edit_snippets WHERE id=:id LIMIT 1");
 				$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
@@ -348,15 +267,12 @@ class once extends core{
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->execute();
 			}
-
 			// Get count of returned records
-			$obj['count']=$stmt->rowCount();
-			if($obj['count']){
-				$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
-
+			if($stmt->rowCount()){
+				$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
 				// Prepare statements to update snippet.
 				$stmt = $this->pdo->prepare("UPDATE edit_snippets SET category_id=:category_id, name=:name, tags=:tags, author=:author, author_url=:author_url, description=:description WHERE id=:id LIMIT 1");
-				$stmt->bindParam(':id', $obj['item']['id'], PDO::PARAM_INT);
+				$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':category_id', $this->data['category_id'], PDO::PARAM_INT, 50);
 				$stmt->bindParam(':name', $this->data['name'], PDO::PARAM_STR, 50);
 				$stmt->bindParam(':tags', $this->data['tags'], PDO::PARAM_STR, 50);
@@ -365,33 +281,16 @@ class once extends core{
 				$stmt->bindParam(':description', $this->data['description'], PDO::PARAM_STR, 50);
 				$stmt->execute();
 				
-				if($stmt->rowCount()){
-					// Set status ok
-					$obj['status']='ok';
-				}else{
-					$obj['errors'][]='Cant save';
-					$obj['error']++;
+				if(!$stmt->rowCount()){
+					$this->set_error('Can not save');
 				}
 			}else{
-				$obj['errors'][]='Snippet not exist / for selected user';
-				$obj['error']++;
+				$this->set_error('Snippet not exist / for selected user');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_insights_image(){//ok
+	function item_insights_image(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
 			// Check if user is creator/admin or just user
 			if($this->once_creator_check()){
@@ -408,80 +307,64 @@ class once extends core{
 			}
 			
 			// Get count of returned records
-			$obj['count']=$stmt->rowCount();
-			if($obj['count']){
-				$this->once_insights_image("http://oncebuilder.com/once/snippets/".$this->data['id'],$this->data['root_path']."/once/snippets/".$this->data['id']."/thumbnail.png");
-				$obj['status']='ok';
+			if($stmt->rowCount()){
+				$this->once_insights_image("https://oncebuilder.com/once/snippets/".$this->data['id'],$this->data['root_path']."/once/snippets/".$this->data['id']."/thumbnail.png");
 			}else{
-				$obj['errors'][]='Snippet not exist / for selected user';
-				$obj['error']++;
+				$this->set_error('Snippet not exist / for selected user');
 			}
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_download(){//ok
+	function item_download(){
 		// Check type of request $_GET -> local , $_POST -> remote
 		if($this->data['id']){
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "https://oncebuilder.com/once/ajax.php?c=snippets&o=item_download");
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, "api=".$this->data['api_key']."&snippet_id=".$this->data['id']); //dane do wyslania
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-			$response = curl_exec($ch);
-			curl_close($ch);
-			// Decode json
-			$obj=json_decode($response, true);
-	
-			// Use once to insert empty snippet
-			$objx=$this->once_insert('snippets',array(
-				"id" => '',
-				"user_id"=> $this->data['user_id']
-			));
+			if($this->once_creator_check()){
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, "https://oncebuilder.com/once/ajax.php?c=snippets&o=item_download");
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "api=".$this->data['api_key']."&snippet_id=".$this->data['id']); //dane do wyslania
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+				$response = curl_exec($ch);
+				curl_close($ch);
+				// Decode json
+				$obj=json_decode($response, true);
+				$this->item=$obj['item'];
+				
+				// Use once to insert empty snippet
+				$objx=$this->once_insert('snippets',array(
+					"id" => '',
+					"name" => $this->item['name'],
+					"user_id"=> $this->data['user_id']
+				));
 
-			$stmt = $this->pdo->prepare("UPDATE edit_snippets SET name=:name WHERE id=:id LIMIT 1");
-			$stmt->bindParam(':name', $obj['item']['name'], PDO::PARAM_STR, 255);
-			$stmt->bindParam(':id', $objx['item']['id'], PDO::PARAM_INT);
-			$stmt->execute();
-			
-			if($objx['count']){
-				// Make snippet dir
-				@mkdir("./snippets");
-				@chmod("./snippets", 0777);
-				@mkdir("./snippets/".$objx['item']['id']);
-				@chmod("./snippets/".$objx['item']['id'], 0777);
+				if($objx){
+					// Make snippet dir
+					@mkdir("./snippets");
+					@chmod("./snippets", 0777);
+					@mkdir("./snippets/".$objx['item']['id']);
+					@chmod("./snippets/".$objx['item']['id'], 0777);
+				}
+				
+				// Prepare statements to get snippet.php template
+				$tpl['source']=@file_get_contents($this->data['root_path'].'/once/default/snippet.php');
+				
+				// Create preview file
+				file_put_contents($this->data['root_path'].'/once/snippets/'.$objx['item']['id'].'/index.php',$tpl['source']);
+				
+				// DOWNLOAD SNIPPET FROM UNIQUE URL AND UNPACK
+				$html=@file_get_contents('https://oncebuilder.com/once/snippets/'.$this->data['id'].'/snippet.html');
+				$css=@file_get_contents('https://oncebuilder.com/once/snippets/'.$this->data['id'].'/snippet.css');
+				$js=@file_get_contents('https://oncebuilder.com/once/snippets/'.$this->data['id'].'/snippet.js');
+				
+				@file_put_contents("./snippets/".$objx['item']['id'].'/snippet.html',$html);
+				@file_put_contents("./snippets/".$objx['item']['id'].'/snippet.css',$css);
+				@file_put_contents("./snippets/".$objx['item']['id'].'/snippet.js',$js);
+				
+				@file_put_contents("./snippets/".$objx['item']['id'].'/thumbnail.png',file_get_contents('https://oncebuilder.com/once/snippets/'.$this->data['id'].'/thumbnail.png'));
 			}
-			
-			// Prepare statements to get snippet.php template
-			$tpl['source']=@file_get_contents($this->data['root_path'].'/once/default/snippet.php');
-			
-			// Create preview file
-			file_put_contents($this->data['root_path'].'/once/snippets/'.$objx['item']['id'].'/index.php',$tpl['source']);
-			
-			// DOWNLOAD SNIPPET FROM UNIQUE URL AND UNPACK
-			$obj['itemx']['source_html']=@file_get_contents('http://oncebuilder.com/once/snippets/'.$this->data['id'].'/snippet.html');
-			$obj['itemx']['source_css']=@file_get_contents('http://oncebuilder.com/once/snippets/'.$this->data['id'].'/snippet.css');
-			$obj['itemx']['source_js']=@file_get_contents('http://oncebuilder.com/once/snippets/'.$this->data['id'].'/snippet.js');
-			
-			@file_put_contents("./snippets/".$objx['item']['id'].'/snippet.html',$obj['itemx']['source_html']);
-			@file_put_contents("./snippets/".$objx['item']['id'].'/snippet.css',$obj['itemx']['source_css']);
-			@file_put_contents("./snippets/".$objx['item']['id'].'/snippet.js',$obj['itemx']['source_js']);
-			
-			@file_put_contents("./snippets/".$objx['item']['id'].'/thumbnail.png',file_get_contents('http://oncebuilder.com/once/snippets/'.$this->data['id'].'/thumbnail.png'));
-			
-			$obj['status']='ok';
-			
-			//return $obj;
 		}else{
 			// Check if user exist by api_key
 			$stmt = $this->pdo->prepare("SELECT id FROM edit_users WHERE api_key=:api_key LIMIT 1");
@@ -507,10 +390,9 @@ class once extends core{
 
 						if($stmt2->rowCount()){
 							// Return whole snippet
-							$obj['item']=$row2;
-							$obj['status']='ok';
+							$this->item=$row2;
 						}else{
-							if($row['balance']>$row2['price']){
+							if($row['balance']>=$row2['price']){
 								// Mark snippet unlocked for future use
 								$stmt3 = $this->pdo->prepare("INSERT INTO edit_snippets_downloads (user_id, snippet_id, mktime) VALUES(:user_id, :snippet_id, :mktime)");
 								$stmt3->bindParam(':user_id', $row['id'], PDO::PARAM_INT);
@@ -523,10 +405,9 @@ class once extends core{
 								$stmt4->execute();
 								
 								// Return whole snippet
-								$obj['item']=$row2;
-								$obj['status']='ok';
+								$this->item=$row2;
 							}else{
-								$obj['error']='not enough balance';
+								$this->set_error('Not enough balance');
 							}
 						}
 					}else{
@@ -547,81 +428,54 @@ class once extends core{
 						}
 						
 						// Return whole snippet
-						$obj['item']=$row2;
-						$obj['status']='ok';
+						$this->item=$row2;
 					}
 				}else{
-					$obj['errors'][]='Snippet not exist';
-					$obj['error']++;
+					$this->set_error('Snippet not exist');
 				}
 			}else{
-				$obj['errors'][]='API not authorized';
-				$obj['error']++;
+				$this->set_error('API not authorized');
 			}
 		}
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_new(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-		
+	function item_new(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
+			if(!$this->once_creator_check()){
+				// @2do dd limits
+			}
+			
 			// Use once to insert empty record
-			$obj=$this->once_insert('snippets',array(
+			if($this->once_insert('snippets',array(
 				"id" => '',
 				"user_id"=> $this->data['user_id']
-			));
+			))){
 			
-			if($obj['count']){
 				// Make snippets dir
-				@mkdir('./once/snippets');
-				@chmod('./once/snippets', 0777);
+				@mkdir($this->data['root_path'].'/once/snippets');
+				@chmod($this->data['root_path'].'/once/snippets', 0777);
 				
 				// Make snippet dir
-				@mkdir('./once/snippets/'.$obj['item']['id']);
-				@chmod('./once/snippets/'.$obj['item']['id'], 0777);
+				@mkdir($this->data['root_path'].'/once/snippets/'.$this->item['id']);
+				@chmod($this->data['root_path'].'/once/snippets/'.$this->item['id'], 0777);
 
 				// Prepare statements to get snippet.php template
-				$tpl['source']=@file_get_contents('./once/default/snippet.php');
+				$tpl['source']=@file_get_contents($this->data['root_path'].'/once/default/snippet.php');
 				
 				// Create preview file
-				file_put_contents('./once/snippets/'.$obj['item']['id'].'/index.php',$tpl['source']);
+				@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/index.php',$tpl['source']);
 
 				// Create other default files
-				file_put_contents('./once/snippets/'.$obj['item']['id'].'/snippet.html','');
-				file_put_contents('./once/snippets/'.$obj['item']['id'].'/snippet.css','');
-				file_put_contents('./once/snippets/'.$obj['item']['id'].'/snippet.js','');
-				
-				// Set status ok
-				$obj['status']='ok';
+				@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.html','');
+				@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.css','');
+				@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.js','');
 			}else{
-				// Return error if item not created
-				$obj['errors'][]='Can not insert item to: snippets';
-				$obj['error']++;
+				$this->set_error('Can not insert item to: snippets');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_preview(){//ok
+	function item_preview(){
 		// Check type of request $_GET -> local , $_POST -> remote
 		if($this->data['id']){
 			$ch = curl_init();
@@ -637,7 +491,7 @@ class once extends core{
 			// Decode json
 			//$response=preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response);
 			$obj=json_decode($response, true);
-
+			$this->item=$obj['item'];
 			return $obj;
 		}else{
 			// Check if user exist by api_key
@@ -653,9 +507,9 @@ class once extends core{
 				$stmt->execute();
 
 				if($stmt->rowCount()){
-					$obj['item']=$stmt->fetch(PDO::FETCH_ASSOC);
+					$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
 					
-					if($obj['item']['price']>0){
+					if($this->item['price']>0){
 						// Check if user bought this snippet
 						$stmt = $this->pdo->prepare("SELECT COUNT(*) AS ile FROM edit_snippets_downloads WHERE user_id=:user_id AND snippet_id=:snippet_id LIMIT 1");
 						$stmt->bindParam(':user_id', $row['id'], PDO::PARAM_INT);
@@ -663,37 +517,26 @@ class once extends core{
 						$stmt->execute();
 						
 						if($stmt->fetchColumn() > 0) {
-							$obj['item']['bought']=true;
+							$this->item['bought']=true;
 						}
 					}
 					
-					if($obj['item']['price']==0 || $obj['item']['bought']){
+					if($this->item['price']==0 || $this->item['bought']){
 						// Return snippet source
-						$obj['item']['source_html']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['snippet_id'].'/snippet.html');
-						$obj['item']['source_css']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['snippet_id'].'/snippet.css');
-						$obj['item']['source_js']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['snippet_id'].'/snippet.js');
+						$this->item['source_html']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['snippet_id'].'/snippet.html');
+						$this->item['source_css']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['snippet_id'].'/snippet.css');
+						$this->item['source_js']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['snippet_id'].'/snippet.js');
 					}
-					
-					$obj['status']='ok';
 				}else{
-					$obj['errors'][]='Snippet not exist';
-					$obj['error']++;
+					$this->set_error('Snippet not exist / for selected user');
 				}
 			}else{
-				$obj['errors'][]='API not authorized';
-				$obj['error']++;
+				$this->set_error('API not authorized');
 			}
 		}
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_publish(){//ok??? .'..
+	function item_publish(){
 		// Check type of request $_GET -> local , $_POST -> remote
 		if($this->data['id']){
 			if($this->once_csrf_token_check($this->data['csrf_token'])){
@@ -702,13 +545,13 @@ class once extends core{
 				$stmt->bindParam('id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->execute();
 
-				$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+				$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 
 				// Check if snippet exist.
-				if($obj['item']){
+				if($this->item){
 					// Update file if not exist
-					if(!file_exists($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/thumbnail.png')){
-						file_put_contents($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/thumbnail.png','');
+					if(!file_exists($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/thumbnail.png')){
+						file_put_contents($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/thumbnail.png','');
 					}
 					
 					// Set CURL
@@ -722,24 +565,24 @@ class once extends core{
 					// Add files depends on version PHP
 					$version = explode('.', phpversion());
 					if($version[0]>=5 && $version[1]>=5){
-						//curl_file_create(realpath('snippets/'.$obj['item']['id'].'/snippet.zip'))
+						//curl_file_create(realpath('snippets/'.$this->item['id'].'/snippet.zip'))
 												
-						$file_html = new CURLFile(realpath('snippets/'.$obj['item']['id'].'/snippet.html'));
+						$file_html = new CURLFile(realpath('snippets/'.$this->item['id'].'/snippet.html'));
 						$file_html->setPostFilename('snippet.zip');
 						
-						$file_css = new CURLFile(realpath('snippets/'.$obj['item']['id'].'/snippet.css'));
+						$file_css = new CURLFile(realpath('snippets/'.$this->item['id'].'/snippet.css'));
 						$file_css->setPostFilename('snippet.css');
 						
-						$file_js = new CURLFile(realpath('snippets/'.$obj['item']['id'].'/snippet.js'));
+						$file_js = new CURLFile(realpath('snippets/'.$this->item['id'].'/snippet.js'));
 						$file_js->setPostFilename('snippet.js');
 						
-						$thumbnail = new CURLFile(realpath('snippets/'.$obj['item']['id'].'/thumbnail.png'));
+						$thumbnail = new CURLFile(realpath('snippets/'.$this->item['id'].'/thumbnail.png'));
 						$thumbnail->setPostFilename('thumbnail.zip');
 					}else{
-						$file_html = '@' . realpath($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/snippet.html');
-						$file_css = '@' . realpath($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/snippet.css');
-						$file_js = '@' . realpath($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/snippet.js');
-						$thumbnail = '@' . realpath($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/thumbnail.png');
+						$file_html = '@' . realpath($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.html');
+						$file_css = '@' . realpath($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.css');
+						$file_js = '@' . realpath($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.js');
+						$thumbnail = '@' . realpath($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/thumbnail.png');
 					}
 					
 					// Send files and parms
@@ -753,38 +596,35 @@ class once extends core{
 							"file_css" => $file_css,		
 							"file_js" => $file_js,		
 							"thumbnail" => $thumbnail,			
-							'category_id' => $obj['item']['category_id'],
-							'object_id' => $obj['item']['id'],
-							'version' => $obj['item']['version'],
-							'name' => $obj['item']['name'],
-							'tags' => $obj['item']['tags'],
-							'author' => $obj['item']['author'],
-							'author_url' => $obj['item']['author_url'],
-							'description' => $obj['item']['description']
+							'category_id' => $this->item['category_id'],
+							'object_id' => $this->item['id'],
+							'version' => $this->item['version'],
+							'name' => $this->item['name'],
+							'tags' => $this->item['tags'],
+							'author' => $this->item['author'],
+							'author_url' => $this->item['author_url'],
+							'description' => $this->item['description']
 						)
 					);
 
 					// Get response
 					$response = curl_exec($ch);
-
+					$obj=json_decode($response, true);
+					$this->item=$obj['item'];
+					
 					if(strpos($response, '"status":"ok"')){
 						// Prepare set as published
 						$stmt = $this->pdo->prepare("UPDATE edit_snippets SET object_id=:object_id WHERE id=:id LIMIT 1");
 						$stmt->bindParam(':object_id', $this->data['id'], PDO::PARAM_INT);
 						$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 						$stmt->execute();
-						$obj['status']='ok';
 					}else{
-						$obj['error']='Upload API error';
+						$this->set_error('Upload API error');
 					}
-
 					curl_close($ch);
 				}else{
-					$obj['error']='Snippet doesn\'t exist';
+					$this->set_error('Snippet does not exist');
 				}
-			}else{
-				$obj['errors'][]='CSFR token invalid!';
-				$obj['error']++;
 			}
 		}else{
 			if($this->data['object_id']){
@@ -797,8 +637,6 @@ class once extends core{
 				// Check if api_key is connected with user.
 				if($obj['user']){
 					if($this->data["file_html"]["error"] > 0 || $this->data["file_css"]["error"] > 0 || $this->data["file_js"]["error"] > 0 || $this->data["thumbnail"]["error"] > 0){
-						$obj['error']='error file upload';
-					}else{
 						// Insert new snippet
 						$stmt = $this->pdo->prepare("
 							INSERT INTO edit_snippets (user_id, object_id, version, name, tags, author, author_url, description, created)
@@ -819,19 +657,6 @@ class once extends core{
 						// Get last insert id
 						$lastInsertId=$this->pdo->lastInsertId();
 
-						// Insert message
-						if($this->data['message']!=''){
-							$stmt = $this->pdo->prepare("
-								INSERT INTO edit_snippets_reports (user_id, snippet_id, mktime, message)
-								VALUES (:user_id, :snippet_id, :mktime, :message)
-							");
-							$stmt->bindParam(':user_id', $obj['user']['id'], PDO::PARAM_INT);
-							$stmt->bindParam(':snippet_id', $lastInsertId, PDO::PARAM_INT);
-							$stmt->bindParam(':mktime', $this->data['time'], PDO::PARAM_INT);
-							$stmt->bindParam(':message', $this->data['message'], PDO::PARAM_STR, 255);
-							$stmt->execute();
-						}
-						
 						// Make dirs and generate files
 						@mkdir($this->data['root_path']."/once/snippets/".$lastInsertId."");
 						@chmod($this->data['root_path']."/once/snippets/".$lastInsertId."", 0777);
@@ -853,31 +678,21 @@ class once extends core{
 										
 						// Use google to get screenshot
 						if($this->data["thumbnail"]["tmp_name"]==''){
-							$this->once_insights_image("http://oncebuilder.com/once/snippets/".$this->data['id'],$this->data['root_path']."/once/snippets/".$this->data['id']."/thumbnail.png");
+							$this->once_insights_image("https://oncebuilder.com/once/snippets/".$this->data['id'],$this->data['root_path']."/once/snippets/".$this->data['id']."/thumbnail.png");
 						}
-						
-						//Resize image if its 320x240 if it's larger
-						$obj['status']='ok';
+					}else{
+						$this->set_error('Error file upload');
 					}
 				}else{
-					$obj['error']='API key not found';
+					$this->set_error('API key not found');
 				}
 			}else{
-				$obj['errors'][]='Object missed!';
-				$obj['error']++;
+				$this->set_error('Object missed!');
 			}
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function item_star(){//ok
+	function item_star(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
 			// Check if user is creator/admin or just user
 			if($this->once_creator_check()){
@@ -894,11 +709,10 @@ class once extends core{
 			}
 			
 			// Get count of returned records
-			$obj['count']=$stmt->rowCount();
-			if($obj['count']){
-				$once['item']=$stmt->fetch(PDO::FETCH_ASSOC);
+			if($stmt->rowCount()){
+				$this->item=$stmt->fetch(PDO::FETCH_ASSOC);
 				// Check if its stared/unstared then unstar/star
-				if($once['item']['stared']==1){
+				if($this->item['stared']==1){
 					// Prepare statements to unstar selected data
 					$stmt = $this->pdo->prepare("UPDATE edit_snippets SET stared=0 WHERE id=:id LIMIT 1");
 					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
@@ -909,28 +723,15 @@ class once extends core{
 					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 					$stmt->execute();
 				}
-				$obj['status']='ok';
 			}else{
-				$obj['errors'][]='Snippet doesn\'t exist';
-				$obj['error']++;
+				$this->set_error('Snippet not exist');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 	
-	function load_source(){//ok
-		if(true){//$this->once_csrf_token_check($this->data['csrf_token']
+	function load_source(){
+		if(true || $this->once_csrf_token_check($this->data['csrf_token'])){
 			// Check if user is creator/admin or just user
 			if($this->once_creator_check()){
 				// Prepare statements to get snippet.
@@ -947,45 +748,29 @@ class once extends core{
 
 			// Check if snippet exist then open source file
 			if($stmt->rowCount()){
-				$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+				$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 
 				// Open selected file
 				if($this->data['file']=='snippet.html'){
-					$obj['source']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.html');
-					$obj['status']='ok';
+					$this->item['source']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.html');
 				}else if($this->data['file']=='snippet.css'){
-					$obj['source']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.css');
-					$obj['status']='ok';
+					$this->item['source']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.css');
 				}else if($this->data['file']=='snippet.js'){
-					$obj['source']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.js');
-					$obj['status']='ok';
+					$this->item['source']=@file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.js');
 				}else{
-					$obj['errors'][]='can not load file';
-					$obj['error']++;
+					$this->set_error('Can not load file');
 				}
 
-				if(!$obj['source']){
-					$obj['source']='';
+				if(!$this->item['source']){
+					$this->item['source']='';
 				}
 			}else{
-				$obj['errors'][]='Plugin not exist / for selected user';
-				$obj['error']++;
+				$this->set_error('Snippet not exist / for selected user');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
- 	function save_source(){//ok
+ 	function save_source(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
 			// Check if user is creator/admin or just user
 			if($this->once_creator_check()){
@@ -1002,50 +787,32 @@ class once extends core{
 			}
 			
 			// Check if snippet exist then save source to file
-			$obj['count']=$stmt->rowCount();
-			if($obj['count']){
-				$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			if($stmt->rowCount()){
+				$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 				
 				// Save file with content
 				if($this->data['file']=='snippet.html'){
-					$obj['source']=@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.html',$this->data['source']);
+					$this->item['source']=@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.html',$this->data['source']);
 				}else if($this->data['file']=='snippet.css'){
-					$obj['source']=@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.css',$this->data['source']);
+					$this->item['source']=@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.css',$this->data['source']);
 				}else if($this->data['file']=='snippet.js'){
-					$obj['source']=@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.js',$this->data['source']);
+					$this->item['source']=@file_put_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.js',$this->data['source']);
 				}else{
-					$obj['errors'][]='can not save to file';
-					$obj['error']++;
+					$this->set_error('Can not load this file');
 				}
 					
-				//2do Update archive
+				//@2do Update archive
 
-				if($obj['source']){
-					$obj['status']='ok';
+				if(!$this->item['source']){
+					$this->set_error('Source could not be saved');
 				}
 			}else{
-				$obj['errors'][]='Snippet not exist / for selected user';
-				$obj['error']++;
+				$this->set_error('Snippet not exist / for selected user');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
-	function upload_thumbnail(){//ok
-		// used varibles
-		$obj['errors'] =  array();
-		$obj['error'] = 0 ;
-				
+	function upload_thumbnail(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
 			// Check if user is creator/admin or just user
 			if($this->once_creator_check()){
@@ -1062,8 +829,7 @@ class once extends core{
 			}
 			
 			// Get count of returned records
-			$obj['count']=$stmt->rowCount();
-			if($obj['count']){
+			if($stmt->rowCount()){
 				if(!$this->data["image"]["error"]){
 					//extract extension
 					$image_extensions_allowed = array('jpg', 'jpeg', 'png', 'gif');
@@ -1079,58 +845,40 @@ class once extends core{
 							// Check size up to 1MB
 							if($this->data["image"]["size"]<= 1000000) {
 								// Make dirs and generate files
-								@mkdir("./snippets");
-								@mkdir("./snippets/".$this->data['id']."");
-								chmod("./snippets/".$this->data['id']."", 0777);
+								@mkdir($this->data['root_path']."/once/snippets");
+								@mkdir($this->data['root_path']."/once/snippets/".$this->data['id']."");
+								chmod($this->data['root_path']."/once/snippets/".$this->data['id']."", 0777);
 									
 								// Move uploaded file to upload dir
 								move_uploaded_file($this->data["image"]["tmp_name"],$this->data['root_path'].'/once/snippets/'.$this->data['id'].'/thumbnail.png');
 								
 								// Resize image
-								$this->once_image_resize($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/thumbnail.png',170,170);
+								$this->once_image_resize($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/thumbnail.png',320,240);
 
 								// Set fields to update
-								$obj['item']=array(
+								$this->item=array(
 									"id" => $this->data['id']
 								);
-								
-								$obj['status']='ok';
 							}else{
-								$obj['errors'][]='We only accept images up to 1MB';
-								$obj['error']++;
+								$this->set_error('We only accept images up to 1MB');
 							}
 						}else{
-							$obj['errors'][]='We only accept GIF and JPEG images';
-							$obj['error']++;
+							$this->set_error('We only accept GIF and JPEG images');
 						}
 					}else{
-						$obj['errors'][]='Extension not allowed';
-						$obj['error']++;
+						$this->set_error('Extension not allowed');
 					}
 				}else{
-					$obj['errors'][]='Upload error';
-					$obj['error']++;
+					$this->set_error('Upload error');
 				}
 			}else{
-				$obj['errors'][]='Snippet not exist / for selected user';
-				$obj['error']++;
+				$this->set_error('Snippet not exist / for selected user');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 
-	//2do
+	//@2do
 	function item_user_publish(){
 		if($this->once_csrf_token_check($this->data['csrf_token'])){
 			// Prepare statements to get selected id.
@@ -1139,35 +887,20 @@ class once extends core{
 			$stmt->bindParam('user_id', $this->data['user_id'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 
 			// Check if snippet exist.
-			if($obj['item']){
+			if($this->item){
 				// Prepare statements to update snippet.
-				$stmt = $this->pdo->prepare("UPDATE edit_snippets SET object_id=:object_id WHERE id=:id AND user_id=:user_id LIMIT 1");
+				$stmt = $this->pdo->prepare("UPDATE edit_snippets SET object_id=".$this->item['id']." WHERE id=:id AND user_id=:user_id LIMIT 1");
 				$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
-				$stmt->bindParam(':object_id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->execute();
-					
-				$obj['status']='ok';
 			}else{
-				$obj['errors'][]='snippet not exist';
-				$obj['error']++;
+				$this->set_error('Snippet not exist');
 			}
-		}else{
-			$obj['errors'][]='CSFR token invalid!';
-			$obj['error']++;
 		}
-
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 	function item_user_fork(){
 		// Prepare statements to get selected id.
@@ -1175,34 +908,39 @@ class once extends core{
 		$stmt->bindParam('id', $this->data['id'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+		$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 				
 		// Check if snippet exist.
-		if($obj['item']){
+		if($this->item){
 			// Prepare statements to insert snippet.
 			$stmt = $this->pdo->prepare("
 				INSERT INTO edit_snippets (user_id, category_id, object_id, version, name, tags, description, author, author_url) 
 				VALUES (:user_id, :category_id, :object_id, :version, :name, :tags, :description, :author, :author_url)
 			");
-			$obj['item']['object_id']=0;
+			$this->item['object_id']=0;
 			$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
-			$stmt->bindParam(':category_id', $obj['item']['category_id'], PDO::PARAM_INT);
-			$stmt->bindParam(':object_id', $obj['item']['object_id'], PDO::PARAM_INT);
-			$stmt->bindParam(':version', $obj['item']['version'], PDO::PARAM_INT);
-			$stmt->bindParam(':name', $obj['item']['name'], PDO::PARAM_STR, 100);
-			$stmt->bindParam(':tags', $obj['item']['tags'], PDO::PARAM_STR, 100);
-			$stmt->bindParam(':description', $obj['item']['description'], PDO::PARAM_STR, 100);
-			$stmt->bindParam(':author', $obj['item']['author'], PDO::PARAM_STR, 100);
-			$stmt->bindParam(':author_url', $obj['item']['author_url'], PDO::PARAM_STR, 100);
+			$stmt->bindParam(':category_id', $this->item['category_id'], PDO::PARAM_INT);
+			$stmt->bindParam(':object_id', $this->item['object_id'], PDO::PARAM_INT);
+			$stmt->bindParam(':version', $this->item['version'], PDO::PARAM_INT);
+			$stmt->bindParam(':name', $this->item['name'], PDO::PARAM_STR, 100);
+			$stmt->bindParam(':tags', $this->item['tags'], PDO::PARAM_STR, 100);
+			$stmt->bindParam(':description', $this->item['description'], PDO::PARAM_STR, 100);
+			$stmt->bindParam(':author', $this->item['author'], PDO::PARAM_STR, 100);
+			$stmt->bindParam(':author_url', $this->item['author_url'], PDO::PARAM_STR, 100);
 			$stmt->execute();
 					
 			// Get last insert id
 			$lastInsertId=$this->pdo->lastInsertId();
 
-			// Make dirs and generate files
-			@mkdir("./once/snippets/".$lastInsertId."");
-			chmod("./once/snippets/".$lastInsertId."", 0777);
-			
+			// Make snippets dir
+			@mkdir($this->data['root_path'].'/once/snippets');
+			@chmod($this->data['root_path'].'/once/snippets', 0777);
+				
+			// Make snippet dir
+			@mkdir($this->data['root_path'].'/once/snippets/'.$lastInsertId);
+			@chmod($this->data['root_path'].'/once/snippets/'.$lastInsertId, 0777);
+
+
 			// Prepare statements to get snippet.php template
 			$tpl['source']=@file_get_contents($this->data['root_path'].'/once/default/snippet.php');
 			
@@ -1210,30 +948,55 @@ class once extends core{
 			file_put_contents($this->data['root_path'].'/once/snippets/'.$lastInsertId.'/index.php',$tpl['source']);
 			
 			// Copy snippet
-			copy($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/snippet.html',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/snippet.html');
-			copy($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/snippet.css',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/snippet.css');
-			copy($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/snippet.js',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/snippet.js');
+			copy($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.html',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/snippet.html');
+			copy($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.css',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/snippet.css');
+			copy($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/snippet.js',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/snippet.js');
 			
 			// Copy logo
-			copy($this->data['root_path'].'/once/snippets/'.$obj['item']['id'].'/thumbnail.png',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/thumbnail.png');
+			copy($this->data['root_path'].'/once/snippets/'.$this->item['id'].'/thumbnail.png',$this->data['root_path'].'/once/snippets/'.$lastInsertId.'/thumbnail.png');
 
 			// Return new item id
-			$obj['item']['id']=$lastInsertId;
-			
-			$obj['status']='ok';
+			$this->item['id']=$lastInsertId;
 		}else{
-			$obj['errors'][]='snippet not exist';
-			$obj['error']++;
-		}	
-			
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
+			$this->set_error('Snippet not exist');
 		}
+		return $this->once_response();
+	}
+	function item_user_new(){
+		if($this->once_csrf_token_check($this->data['csrf_token'])){
+			if(!$this->once_creator_check()){
+				// @2do dd limits
+			}
+			
+			// Use once to insert empty record
+			if($this->once_insert('snippets',array(
+				"id" => '',
+				"user_id"=> $this->data['user_id']
+			))){
+			
+				// Make snippets dir
+				@mkdir('once/snippets');
+				@chmod('once/snippets', 0777);
+				
+				// Make snippet dir
+				@mkdir('once/snippets/'.$this->item['id']);
+				@chmod('once/snippets/'.$this->item['id'], 0777);
+
+				// Prepare statements to get snippet.php template
+				$tpl['source']=@file_get_contents('once/default/snippet.php');
+				
+				// Create preview file
+				@file_put_contents('once/snippets/'.$this->item['id'].'/index.php',$tpl['source']);
+
+				// Create other default files
+				@file_put_contents('once/snippets/'.$this->item['id'].'/snippet.html','');
+				@file_put_contents('once/snippets/'.$this->item['id'].'/snippet.css','');
+				@file_put_contents('once/snippets/'.$this->item['id'].'/snippet.js','');
+			}else{
+				$this->set_error('Can not insert item to: snippets');
+			}
+		}
+		return $this->once_response();
 	}
 	function item_user_vote(){
 		if($this->data['user_logged']){
@@ -1242,20 +1005,20 @@ class once extends core{
 			$stmt->bindParam('id', $this->data['id'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 					
 			// Check if snippet exist.
-			if($obj['item']){
+			if($this->item){
 				// Prepare statements to get vote.
 				$stmt = $this->pdo->prepare("SELECT id FROM edit_snippets_votes WHERE snippet_id=:snippet_id AND user_id=:user_id LIMIT 1");
 				$stmt->bindParam(':snippet_id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 				$stmt->execute();
 
-				$obj['star'] = $stmt->fetch(PDO::FETCH_ASSOC);
+				$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 						
 				// Check if snippet exist.
-				if(!$obj['star']){
+				if(!$this->item){
 					// Prepare statements to insert vote.
 					$stmt = $this->pdo->prepare("
 						INSERT INTO edit_snippets_votes (snippet_id, user_id, mktime) 
@@ -1270,29 +1033,16 @@ class once extends core{
 					$stmt = $this->pdo->prepare("UPDATE edit_snippets SET votes=votes+1 WHERE id=:id LIMIT 1");
 					$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 					$stmt->execute();
-					
-					$obj['status']='ok';
 				}else{
-					$obj['errors'][]='can not vote';
-					$obj['error']++;
+					$this->set_error('Can not vote');
 				}
 			}else{
-				$obj['errors'][]='snippet not exist';
-				$obj['error']++;
+				$this->set_error('Snippet not exist');
 			}
 		}else{
-			$obj['errors'][]='user not logged';
-			$obj['error']++;
+			$this->set_error('User not logged');
 		}
-			
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 	function item_user_download(){
 		// Load ZipArchive class to procces download project as zip archive
@@ -1312,10 +1062,10 @@ class once extends core{
 		$stmt->bindParam('id', $this->data['id'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+		$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 				
 		// Check if snippet exist.
-		if($obj['item']){
+		if($this->item){
 			// Prepare index.html
 			$str="
 			<!DOCTYPE html>
@@ -1338,7 +1088,7 @@ class once extends core{
 					</script>
 				</head>
 				<body>
-					<div class=\"text-center\" style=\"border-bottom: 1px solid #fefefe; padding: 5px 0 10px 0;\">Snippet URL and MIT License: <a href=\"http://oncebuilder.com/snippets/".$this->data['id']."\">http://oncebuilder.com/snippets/".$this->data['id']."</a></div>
+					<div class=\"text-center\" style=\"border-bottom: 1px solid #fefefe; padding: 5px 0 10px 0;\">Snippet URL and MIT License: <a href=\"https://oncebuilder.com/snippets/".$this->data['id']."\">https://oncebuilder.com/snippets/".$this->data['id']."</a></div>
 					<div id=\"body\">".file_get_contents($this->data['root_path'].'/once/snippets/'.$this->data['id'].'/snippet.html')."
 					</div>
 				</body>
@@ -1362,21 +1112,10 @@ class once extends core{
 				
 			// Delete file when its done.
 			@unlink($archiveName);
-			
-			$obj['status']='ok';
 		}else{
-			$obj['errors'][]='snippet not exist';
-			$obj['error']++;
+			$this->set_error('Snippet not exist');
 		}	
-		
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
-		}
+		return $this->once_response();
 	}
 	function item_user_report(){
 		// Prepare statements to get snippet.
@@ -1384,20 +1123,20 @@ class once extends core{
 		$stmt->bindParam('id', $this->data['id'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$obj['item'] = $stmt->fetch(PDO::FETCH_ASSOC);
+		$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 				
 		// Check if snippet exist.
-		if($obj['item']){
+		if($this->item){
 			// Prepare statements to get vote.
-			$stmt = $this->pdo->prepare("SELECT id FROM edit_snippets_reports WHERE snippet_id=:snippet_id AND user_id=:user_id LIMIT 1");
+			$stmt = $this->pdo->prepare("SELECT id, star FROM edit_snippets_reports WHERE snippet_id=:snippet_id AND user_id=:user_id LIMIT 1");
 			$stmt->bindParam(':snippet_id', $this->data['id'], PDO::PARAM_INT);
 			$stmt->bindParam(':user_id', $this->data['user_id'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$obj['star'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			$this->item = $stmt->fetch(PDO::FETCH_ASSOC);
 					
 			// Check if snippet exist.
-			if(!$obj['star']){
+			if(!$this->item['star']){
 				// Prepare statements to insert vote.
 				$stmt = $this->pdo->prepare("
 					INSERT INTO edit_snippets_reports (snippet_id, user_id, mktime, message) 
@@ -1413,26 +1152,13 @@ class once extends core{
 				$stmt = $this->pdo->prepare("UPDATE edit_snippets SET reports=reports+1 WHERE id=:id LIMIT 1");
 				$stmt->bindParam(':id', $this->data['id'], PDO::PARAM_INT);
 				$stmt->execute();
-				
-				$obj['status']='ok';
 			}else{
-				$obj['errors'][]='can not report';
-				$obj['error']++;
+			$this->set_error('Can not report');
 			}
 		}else{
-			$obj['errors'][]='snippet not exist';
-			$obj['error']++;
-		}	
-			
-		// Return depends on type
-		if($this->data['ajax']){
-			// Print JSON object
-			echo json_encode($obj);
-		}else{
-			// Return JSON object
-			return $obj;
+			$this->set_error('Snippet not exist');
 		}
+		return $this->once_response();
 	}
-	
 }
 ?>
